@@ -1,0 +1,36 @@
+<div class="login-wrapper" >
+  <div class="form-wrapper" *ngIf="!authLoading; else spinner">
+    <!-- <img src="/assets/images/brandon.png"> -->
+    <div class="form-header">
+      <h2>Login</h2>
+    </div>
+    <form [formGroup]="loginForm" class="login-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input 
+          matInput
+          formControlName="email">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input 
+          matInput
+          type="password"
+          formControlName="password">
+      </mat-form-field>
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="submitLogin()">
+        Submit
+      </button>
+    </form>
+  </div>
+  <ng-template class="loading-spinner" #spinner>
+    <app-loading-spinner></app-loading-spinner>
+  </ng-template>
+</div>
+.lo
+
+
