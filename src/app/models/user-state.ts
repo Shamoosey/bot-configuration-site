@@ -1,8 +1,9 @@
 import { User } from "firebase/auth";
 
 export class UserState {
-  readonly status: UserStatus
-  readonly value: User | undefined | null
+  readonly status: UserStatus;
+  readonly value: User | undefined | null;
+  
   constructor(value: User | undefined | null) {
     if(value === undefined){
       this.status = UserStatus.Unknown

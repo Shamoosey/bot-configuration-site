@@ -3,7 +3,7 @@ import { User, getAuth, onAuthStateChanged } from "firebase/auth";
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from "rxjs";
 import { UserState } from "../models/user-state";
 import { Auth, browserLocalPersistence } from "@angular/fire/auth";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 @Injectable({
   providedIn: 'root',
 })
@@ -13,7 +13,8 @@ export class AuthService {
 
   constructor (
     private auth: Auth,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {
     auth.setPersistence(browserLocalPersistence);
     auth.onAuthStateChanged((user: User | null) => {

@@ -7,19 +7,21 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './assets/material.module';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
-import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
+import { EditConfigurationComponenet } from './components/edit-configuration/edit-configuration.component';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 import { provideFirebaseApp, getApp, initializeApp, FirebaseOptions } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginScreenComponent,
     LandingPageComponent,
-    EditProfileComponent,
-    LoadingSpinnerComponent
+    EditConfigurationComponenet,
+    LoadingSpinnerComponent,
+    NavBarComponent
   ],
   imports: [
     BrowserModule,
@@ -36,6 +38,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
       appId: "1:179744080285:web:23c6f5202ef4780053ef74"
     } as FirebaseOptions)),
     provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
   ],
   providers: [],
   bootstrap: [AppComponent]

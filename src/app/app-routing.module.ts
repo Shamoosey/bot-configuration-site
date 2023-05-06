@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginScreenComponent } from './components/login-screen/login-screen.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { AuthGuard } from './authentication/auth-guard';
-import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
+import { EditConfigurationComponenet } from './components/edit-configuration/edit-configuration.component';
 
 const routes: Routes = [
   {
@@ -12,8 +12,8 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'edit-profile',
-    component: EditProfileComponent,
+    path: 'edit-configuration',
+    component: EditConfigurationComponenet,
     canActivate: [AuthGuard]
   },
   {

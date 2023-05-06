@@ -44,6 +44,8 @@ export class LoginScreenComponent implements OnInit {
       } catch (error) {
         console.error(error)
       }
+    } else {
+      this.loginForm.markAllAsTouched();
     }
   }
 }

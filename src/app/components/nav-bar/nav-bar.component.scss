@@ -1,0 +1,23 @@
+@import "../../assets/styles/variables";
+
+.nav-wrapper {
+  min-height: 85px;
+  .nav-content {
+    height: 85px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0px 24px;
+    .nav-item {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      .nav-title {
+        margin: 0px;
+        padding: 4px 8px;
+        &:hover{
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
