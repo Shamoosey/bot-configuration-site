@@ -6,22 +6,19 @@ import { LoginScreenComponent } from './components/login-screen/login-screen.com
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './assets/material.module';
-import { LandingPageComponent } from './components/landing-page/landing-page.component';
-import { EditConfigurationComponenet } from './components/edit-configuration/edit-configuration.component';
-import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
-import { provideFirebaseApp, getApp, initializeApp, FirebaseOptions } from '@angular/fire/app';
+import { provideFirebaseApp, initializeApp, FirebaseOptions } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { CONFIGURATION_COMPONENTS } from "./components/configuration"
+import { SHARED_COMPONENTS } from "./components/shared"
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginScreenComponent,
-    LandingPageComponent,
-    EditConfigurationComponenet,
-    LoadingSpinnerComponent,
-    NavBarComponent
+    ...CONFIGURATION_COMPONENTS,
+    ...SHARED_COMPONENTS
   ],
   imports: [
     BrowserModule,
@@ -29,6 +26,7 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MaterialModule,
+    NgSelectModule,
     provideFirebaseApp(() => initializeApp({ 
       apiKey: "AIzaSyDKAlG2CuyW_tOqUjeaTm2wB8tMQ2mx1BM",
       authDomain: "joebot-40cc6.firebaseapp.com",

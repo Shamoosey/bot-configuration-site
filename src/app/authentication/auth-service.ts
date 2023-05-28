@@ -16,18 +16,21 @@ export class AuthService {
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {
-    auth.setPersistence(browserLocalPersistence);
-    auth.onAuthStateChanged((user: User | null) => {
-      if (user) {
-        this.userBehaviorSubject.next(new UserState(user))
-        this.isAuthenticatedSubject.next(true)
-      }
-      else {
-        this.userBehaviorSubject.next(new UserState(null))
-        this.isAuthenticatedSubject.next(false)
-        this.router.navigate(['login']);
-      }
-    });
+    this.isAuthenticatedSubject.next(true)
+
+    //Commenting out, maybe will use my own auth
+    // auth.setPersistence(browserLocalPersistence);
+    // auth.onAuthStateChanged((user: User | null) => {
+    //   if (user) {
+    //     this.userBehaviorSubject.next(new UserState(user))
+    //     this.isAuthenticatedSubject.next(true)
+    //   }
+    //   else {
+    //     this.userBehaviorSubject.next(new UserState(null))
+    //     this.isAuthenticatedSubject.next(false)
+    //     this.router.navigate(['login']);
+    //   }
+    // });
   }
 }
 

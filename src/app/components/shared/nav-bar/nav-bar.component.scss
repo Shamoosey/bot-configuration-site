@@ -1,9 +1,10 @@
-@import "../../assets/styles/variables";
+@import "../../../assets/styles/variables";
 
 .nav-wrapper {
-  min-height: 85px;
+  min-height: 64px;
+  background-color: $accent-grey-500;
   .nav-content {
-    height: 85px;
+    height: 64px;
     display: flex;
     justify-content: space-between;
     margin: 0px 24px;

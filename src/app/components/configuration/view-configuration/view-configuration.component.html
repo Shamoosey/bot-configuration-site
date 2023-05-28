@@ -1,0 +1,70 @@
+<div class="configuration-wrapper">
+  <div class="header-content">
+    <h2>Server Name</h2>
+    <button mat-flat-button color="primary" (click)="opened = !opened">Edit</button>
+  </div>
+  <mat-sidenav-container class="example-container" hasBackdrop="true">
+    <mat-sidenav [mode]="'over'" position="end" [(opened)]="opened" [fixedInViewport]="true">
+      <div class="drawer-content">
+        <div class="header">
+          <button mat-icon-button color="primary" (click)="opened = false">
+            <mat-icon>close</mat-icon>
+          </button>
+          Editing Configuration
+        </div>
+        <app-edit-configuration></app-edit-configuration>
+      </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <div class="display-content">
+        <div class="display-item">
+          <div class="data-header">
+            <h3>General Configuration</h3>
+          </div>
+          <div class="data-section first">
+            <div class="section-title">
+              <h3>Kick Cache</h3>
+            </div>
+            <div class="section-data">
+              <div class="data-item">
+                <span class="title">Enabled:</span>
+                <span class="data">{{(joeBotProps | async)?.EnableKickerCache}}</span>
+              </div>
+              <div class="data-item">
+                <span class="title">KickCacheDays:</span>
+                <span class="data">{{(joeBotProps | async)?.KickCacheDays}}</span>
+              </div>
+              <div class="data-item">
+                <span class="title">KickCacheHours:</span>
+                <span class="data">{{(joeBotProps | async)?.KickCacheHours}}</span>
+              </div>
+              <div class="data-item">
+                <span class="title">KickServerMessage:</span>
+                <span class="data">{{(joeBotProps | async)?.KickServerMessage}}</span>
+              </div>
+              <div class="data-item">
+                <span class="title">KickedUserMessage:</span>
+                <span class="data">{{(joeBotProps | async)?.KickedUserMessage}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="data-section">
+            <div class="section-title">
+              <h3>Misc Settings</h3>
+            </div>
+            <div class="section-data">
+              <div class="data-item">
+                <span class="title">DefaultChannel:</span>
+                <span class="data">{{(joeBotProps | async)?.DefaultChannel}}</span>
+              </div>
+              <div class="data-item">
+                <span class="title">SecretUsers:</span>
+                <span class="data">{{(joeBotProps | async)?.SecretUsers | json}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

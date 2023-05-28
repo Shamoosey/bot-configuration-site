@@ -1,14 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginScreenComponent } from './components/login-screen/login-screen.component';
-import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { AuthGuard } from './authentication/auth-guard';
-import { EditConfigurationComponenet } from './components/edit-configuration/edit-configuration.component';
+import { ViewConfigurationComponent, EditConfigurationComponenet } from './components/configuration';
 
 const routes: Routes = [
   {
     path: '',
-    component: LandingPageComponent,
+    component: ViewConfigurationComponent,
     canActivate: [AuthGuard]
   },
   {
