@@ -1,4 +1,4 @@
-export interface JoeConfig {
+export interface Configuration {
   EnableKickerCache: boolean;
   KickCacheDays: number;
   KickCacheHours: number;
