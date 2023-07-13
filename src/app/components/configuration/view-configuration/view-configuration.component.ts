@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { JoeConfig } from 'src/app/models/joe-config';
+import { Configuration } from 'src/app/models/configuration';
 import { StatusMessage } from 'src/app/models/status-message';
 import { Trigger } from 'src/app/models/trigger';
 
@@ -12,7 +12,7 @@ import { Trigger } from 'src/app/models/trigger';
 export class ViewConfigurationComponent implements OnInit {
   opened = false;
 
-  joeBotProps: Observable<JoeConfig>;
+  botProps: Observable<Configuration>;
   triggerData: Observable<Trigger[]>;
   statusMessages: Observable<StatusMessage[]>;
 

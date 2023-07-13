@@ -26,17 +26,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MaterialModule,
-    NgSelectModule,
-    provideFirebaseApp(() => initializeApp({ 
-      apiKey: "AIzaSyDKAlG2CuyW_tOqUjeaTm2wB8tMQ2mx1BM",
-      authDomain: "joebot-40cc6.firebaseapp.com",
-      projectId: "joebot-40cc6",
-      storageBucket: "joebot-40cc6.appspot.com",
-      messagingSenderId: "joebot-40cc6.appspot.com",
-      appId: "1:179744080285:web:23c6f5202ef4780053ef74"
-    } as FirebaseOptions)),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
+    NgSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]
