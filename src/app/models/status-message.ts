@@ -1,4 +1,5 @@
 export interface StatusMessage {
-  Status: string;
-  Type?: unknown;
+  id: string;
+  status: string;
+  type?: unknown;
 }

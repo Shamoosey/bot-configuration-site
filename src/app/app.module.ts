@@ -6,12 +6,10 @@ import { LoginScreenComponent } from './components/login-screen/login-screen.com
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './assets/material.module';
-import { provideFirebaseApp, initializeApp, FirebaseOptions } from '@angular/fire/app';
-import { getAuth, provideAuth } from '@angular/fire/auth';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { CONFIGURATION_COMPONENTS } from "./components/configuration"
 import { SHARED_COMPONENTS } from "./components/shared"
 import { NgSelectModule } from '@ng-select/ng-select';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -26,7 +24,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MaterialModule,
-    NgSelectModule
+    NgSelectModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

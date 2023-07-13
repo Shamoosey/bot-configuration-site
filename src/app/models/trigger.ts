@@ -1,8 +1,9 @@
 export interface Trigger {
-  TriggerWords:Array<string>;
-  Responses?: Array<string>;
-  MessageDelete?: boolean;
-  SendRandomResponse?: boolean;
-  IgnoreCooldown?: boolean;
-  ReactEmote?: Array<string>;
+  id: string;
+  messageDelete: boolean;
+  sendRandomResponse: boolean;
+  ignoreCooldown: boolean;
+  triggerWords: Array<string>;
+  reactEmotes: Array<string>;
+  triggerResponses: Array<string>;
 }

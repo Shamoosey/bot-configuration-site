@@ -2,12 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginScreenComponent } from './components/login-screen/login-screen.component';
 import { AuthGuard } from './authentication/auth-guard';
-import { ViewConfigurationComponent, EditConfigurationComponenet } from './components/configuration';
+import { ConfigurationComponent, EditConfigurationComponenet } from './components/configuration';
 
 const routes: Routes = [
   {
     path: '',
-    component: ViewConfigurationComponent,
+    component: ConfigurationComponent,
     canActivate: [AuthGuard]
   },
   {
