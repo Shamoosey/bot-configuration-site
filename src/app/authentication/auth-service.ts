@@ -1,8 +1,6 @@
 import { Injectable } from "@angular/core";
-import { User, getAuth, onAuthStateChanged } from "firebase/auth";
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from "rxjs";
 import { UserState } from "../models/user-state";
-import { Auth, browserLocalPersistence } from "@angular/fire/auth";
 import { ActivatedRoute, Router } from "@angular/router";
 @Injectable({
   providedIn: 'root',
@@ -12,7 +10,6 @@ export class AuthService {
   public isAuthenticatedSubject:Subject<boolean> = new ReplaySubject<boolean>(1);
 
   constructor (
-    private auth: Auth,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {

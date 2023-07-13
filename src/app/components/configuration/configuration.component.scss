@@ -1,0 +1,38 @@
+@import "../../assets/styles/variables";
+
+mat-drawer {
+  width: 60%;
+  position: fixed;
+}
+
+.configuration-wrapper  {
+  height: calc(100vh - 64px);
+  margin: 0px 32px;
+
+  h2, h3 {
+    margin: 0px;
+  }
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .mat-table {
+    margin: 8px auto;
+    height: 650px;
+    width: 90%;
+    overflow-y: scroll;
+    box-shadow: 1px 1px 9px 1px rgba(0, 0, 0, 0.28);
+  }
+
+  .mat-column-edit-icon {
+    cursor: pointer;
+    flex: 0 0 5%;
+  }
+
+  .mat-column-serverName {
+    flex: 0 0 10%;
+  }
+}

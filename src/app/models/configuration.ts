@@ -1,10 +1,15 @@
+import { Trigger } from "./trigger";
+import { User } from "./user";
+
 export interface Configuration {
-  EnableKickerCache: boolean;
-  KickCacheDays: number;
-  KickCacheHours: number;
-  KickServerMessage: string;
-  KickedUserMessage: string;
-  DefaultChannel: string;
-  GuildId: string;
-  SecretUsers: Array<string>;
+  enableKickCache: boolean;
+  kickCacheDays: number;
+  kickCacheHours: number;
+  name:string;
+  kickCacheServerMessage: string;
+  kickCacheUserMessage: string;
+  defaultChannel: string;
+  serverId: string;
+  triggers: Array<Trigger>;
+  users: Array<User>;
 }

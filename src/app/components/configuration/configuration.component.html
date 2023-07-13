@@ -1,0 +1,93 @@
+<mat-drawer-container hasBackdrop="true" #drawer>
+  <mat-drawer [mode]="'over'" position="end">
+    <app-edit-configuration></app-edit-configuration>
+  </mat-drawer>
+  <mat-drawer-content>
+    <div class="configuration-wrapper">
+      <div class="header-content">
+        <h2>Configuration List</h2>
+      </div>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table" matSort >
+        <ng-container matColumnDef="edit-icon">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let element" (click)="onEditConfig(element)">
+            <mat-icon>edit</mat-icon>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="serverName">
+          <mat-header-cell *matHeaderCellDef 
+            mat-sort-header 
+            [matTooltip]="'Name of the server'" 
+            [matTooltipPosition]="'above'"> 
+            Server Name 
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="defaultChannel">
+          <mat-header-cell *matHeaderCellDef 
+            mat-sort-header 
+            [matTooltip]="'Default channel to send messages to'" 
+            [matTooltipPosition]="'above'"> 
+            Default Channel 
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.defaultChannel}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="enableKickCache">
+          <mat-header-cell *matHeaderCellDef
+            mat-sort-header 
+            [matTooltip]="'Kick cache feature enabled, this feature will auto kick users depending on configured values'" 
+            [matTooltipPosition]="'above'"> 
+            Kick Cache Enabled 
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.enableKickCache}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="kickCacheUserMessage">
+          <mat-header-cell *matHeaderCellDef
+            mat-sort-header 
+            [matTooltip]="'Message to send to the user after they have been kicked via KickerCache'" 
+            [matTooltipPosition]="'above'"> 
+            Kicked User Message 
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.kickCacheUserMessage}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="kickCacheServerMessage">
+          <mat-header-cell *matHeaderCellDef 
+            mat-sort-header 
+            [matTooltip]="'Message to send to the default server channel after the user has been kicked via KickerCache'" 
+            [matTooltipPosition]="'above'"> 
+            Kicked Cache Server Message 
+          </mat-header-cell>
+          <mat-cell mat-cell *matCellDef="let element"> {{element.kickCacheServerMessage}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="kickCacheHours">
+          <mat-header-cell *matHeaderCellDef
+            mat-sort-header 
+            [matTooltip]="''" 
+            [matTooltipPosition]="'above'"> 
+            Kicked Cache Hours Message 
+          </mat-header-cell>
+          <mat-cell mat-cell *matCellDef="let element"> {{element.kickCacheHours}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="kickCacheDays">
+          <mat-header-cell *matHeaderCellDef 
+            mat-sort-header 
+            [matTooltip]="''" 
+            [matTooltipPosition]="'above'"> 
+            Kicked Cache Days Message
+          </mat-header-cell>
+          <mat-cell mat-cell *matCellDef="let element"> {{element.kickCacheDays}} </mat-cell>
+        </ng-container>
+      
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </table>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>
