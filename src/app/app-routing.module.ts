@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginScreenComponent } from './components/login-screen/login-screen.component';
 import { AuthGuard } from './authentication/auth-guard';
-import { ConfigurationComponent, EditConfigurationComponenet } from './components/configuration';
+import { ConfigurationComponent, CreateConfigurationComponenet, EditConfigurationComponenet } from './components/configuration';
 
 const routes: Routes = [
   {
@@ -13,6 +13,11 @@ const routes: Routes = [
   {
     path: 'edit-configuration',
     component: EditConfigurationComponenet,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'create-configuration',
+    component: CreateConfigurationComponenet,
     canActivate: [AuthGuard]
   },
   {

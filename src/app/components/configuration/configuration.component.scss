@@ -1,8 +1,9 @@
 @import "../../assets/styles/variables";
 
 mat-drawer {
-  width: 60%;
+  width: 80%;
   position: fixed;
+  background-color: $color-light;
 }
 
 .configuration-wrapper  {
@@ -11,10 +12,12 @@ mat-drawer {
 
   h2, h3 {
     margin: 0px;
+    padding: 0px;
   }
 
   .header-content {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
   }
@@ -29,10 +32,15 @@ mat-drawer {
 
   .mat-column-edit-icon {
     cursor: pointer;
-    flex: 0 0 5%;
+    flex: 1 1;
   }
-
+  .mat-column-defaultChannel,
+  .mat-column-enableKickCache,
+  .mat-column-kickCacheUserMessage,
+  .mat-column-kickCacheServerMessage,
+  .mat-column-kickCacheHours,
+  .mat-column-kickCacheDays,
   .mat-column-serverName {
-    flex: 0 0 10%;
+    flex: 2 1;
   }
 }

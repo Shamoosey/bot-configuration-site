@@ -1,5 +1,6 @@
 export interface Trigger {
   id: string;
+  name: string;
   messageDelete: boolean;
   sendRandomResponse: boolean;
   ignoreCooldown: boolean;

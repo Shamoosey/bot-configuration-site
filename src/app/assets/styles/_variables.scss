@@ -1,18 +1,23 @@
 
-$accent-100: #111;
-$accent-200: #222;
-$accent-300: #333;
-$accent-400: #444;
-$accent-500: #555;
-$accent-600: #666;
-$accent-700: #777;
-$accent-800: #888;
-$accent-900: #999;
-$accent-grey-500: #FAFAFA;
-$accent-grey-400: #DFDFDF;
-$accent-grey-300: #CDCDCD;
-$accent-grey-200: #BCBCBC;
-$accent-grey-100: #ABABAB;
+$color-primary: #007bff;        // Primary color
+$color-secondary: #6c757d;      // Secondary color
+$color-success: #28a745;        // Success color
+$color-danger: #dc3545;         // Danger color
+$color-warning: #ffc107;        // Warning color
+$color-info: #17a2b8;           // Info color
+$color-light: #f8f9fa;          // Light color
+$color-dark: #343a40;           // Dark color
+
+// Grays
+$color-gray-100: #f8f9fa;       // Gray 100
+$color-gray-200: #e9ecef;       // Gray 200
+$color-gray-300: #dee2e6;       // Gray 300
+$color-gray-400: #ced4da;       // Gray 400
+$color-gray-500: #adb5bd;       // Gray 500
+$color-gray-600: #6c757d;       // Gray 600
+$color-gray-700: #495057;       // Gray 700
+$color-gray-800: #343a40;       // Gray 800
+$color-gray-900: #212529;       // Gray 900
+
 $white: #FFF;
 $black: #000;
-

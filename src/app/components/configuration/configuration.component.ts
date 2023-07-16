@@ -27,6 +27,10 @@ export class ConfigurationComponent implements OnInit {
   ]
 
   editedConfig: Configuration | null = null;
+
+  get editMode() {
+    return this.editedConfig != null;
+  }
   
 
   constructor(
@@ -44,9 +48,14 @@ export class ConfigurationComponent implements OnInit {
     })
   }
 
-  onEditConfig(config: Configuration) {
+  onCreateConfig(){
+    this.editedConfig = null;
     this.drawer.open();
+  }
+
+  onEditConfig(config: Configuration) {
     this.editedConfig = config;
+    this.drawer.open();
   }
 
   onDrawerClose(){
