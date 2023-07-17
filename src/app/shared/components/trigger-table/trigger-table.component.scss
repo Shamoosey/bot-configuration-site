@@ -1,0 +1,35 @@
+@import "../../../assets/styles/variables";
+
+.trigger-table-wrapper  {
+
+  h2, h3 {
+    margin: 0px;
+    padding: 0px;
+  }
+  
+  .mat-table {
+    margin: 8px auto;
+    height: 350px;
+    width: 100%;
+    overflow-y: scroll;
+    box-shadow: 1px 1px 9px 1px rgba(0, 0, 0, 0.28);
+
+    .mat-header-cell {
+      justify-content: center;
+    }
+    .mat-column-icon {
+      cursor: pointer;
+      flex: 1 1;
+    }
+    .mat-column-name,
+    .mat-column-messageDelete,
+    .mat-column-sendRandomResponse,
+    .mat-column-ignoreCooldown,
+    .mat-column-triggerWords,
+    .mat-column-reactEmotes,
+    .mat-column-triggerResponses {
+      flex: 2 1;
+    }
+  }
+
+}

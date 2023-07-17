@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from "rxjs";
-import { UserState } from "../models/user-state";
 import { ActivatedRoute, Router } from "@angular/router";
+import { UserState } from "../shared/models/user-state";
 @Injectable({
   providedIn: 'root',
 })
