@@ -2,6 +2,7 @@ import { Trigger } from "./trigger";
 import { User } from "./user";
 
 export interface Configuration {
+  id?: string
   enableKickCache: boolean;
   kickCacheDays: number;
   kickCacheHours: number;

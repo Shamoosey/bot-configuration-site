@@ -6,17 +6,15 @@ import { LoginScreenComponent } from './components/login-screen/login-screen.com
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './assets/material.module';
-import { CONFIGURATION_COMPONENTS } from "./components/configuration"
-import { SHARED_COMPONENTS } from "./components/shared"
 import { NgSelectModule } from '@ng-select/ng-select';
 import { HttpClientModule } from '@angular/common/http';
+import { ConfigurationModule } from './components/configuration/configuration.module';
+import { SharedModule } from './components/shared/shared.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginScreenComponent,
-    ...CONFIGURATION_COMPONENTS,
-    ...SHARED_COMPONENTS
   ],
   imports: [
     BrowserModule,
@@ -26,6 +24,8 @@ import { HttpClientModule } from '@angular/common/http';
     MaterialModule,
     NgSelectModule,
     HttpClientModule,
+    ConfigurationModule,
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]

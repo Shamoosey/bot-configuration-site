@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Configuration } from 'src/app/models/configuration';
-import { ConfigurationService } from './configuration-service';
+import { ConfigurationService } from './configuration.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDrawer } from '@angular/material/sidenav';
 import { MatSort } from '@angular/material/sort';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-configuration',
@@ -11,7 +12,6 @@ import { MatSort } from '@angular/material/sort';
   styleUrls: ['./configuration.component.scss']
 })
 export class ConfigurationComponent implements OnInit {
-  @ViewChild("drawer") drawer: MatDrawer;
   @ViewChild(MatSort) sort: MatSort;
 
   dataSource = new MatTableDataSource<Configuration>();
@@ -24,17 +24,11 @@ export class ConfigurationComponent implements OnInit {
     "kickCacheServerMessage",
     "kickCacheHours",
     "kickCacheDays",
-  ]
-
-  editedConfig: Configuration | null = null;
-
-  get editMode() {
-    return this.editedConfig != null;
-  }
-  
+  ] 
 
   constructor(
-    private configurationService: ConfigurationService
+    private configurationService: ConfigurationService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -48,19 +42,7 @@ export class ConfigurationComponent implements OnInit {
     })
   }
 
-  onCreateConfig(){
-    this.editedConfig = null;
-    this.drawer.open();
-  }
-
   onEditConfig(config: Configuration) {
-    this.editedConfig = config;
-    this.drawer.open();
+    this.router.navigate(['configuration/manage-configuration'], {queryParams: {id: config.id}})
   }
-
-  onDrawerClose(){
-    this.drawer.close();
-    this.editedConfig = null;
-  }
-
 }

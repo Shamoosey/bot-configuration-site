@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { Configuration } from 'src/app/models/configuration';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -9,13 +9,13 @@ import { Trigger } from 'src/app/models/trigger';
   templateUrl: './trigger-table.component.html',
   styleUrls: ['./trigger-table.component.scss']
 })
-export class TriggerTableComponent implements OnInit {
+export class TriggerTableComponent implements OnInit, OnChanges {
   @Input() triggers: Trigger[];
   @Output() onTriggerEdit = new EventEmitter<Trigger>();
   @Output() onTriggerDelete = new EventEmitter<string>();
 
   @ViewChild(MatSort) sort: MatSort;
-  dataSource = new MatTableDataSource<Configuration>();
+  dataSource = new MatTableDataSource<Trigger>();
   displayedColumns = [
     "icon",
     "name",
@@ -31,6 +31,14 @@ export class TriggerTableComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+  }
+
+  ngOnChanges(changes) {
+    console.log(changes.triggers)
+    if("triggers" in changes){
+      this.dataSource.data = this.triggers;
+      this.dataSource.sort = this.sort;
+    }
   }
 
   onEditTrigger(trigger:Trigger) {

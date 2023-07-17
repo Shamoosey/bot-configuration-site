@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Configuration } from 'src/app/models/configuration';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -9,13 +9,13 @@ import { User } from 'src/app/models/user';
   templateUrl: './user-table.component.html',
   styleUrls: ['./user-table.component.scss']
 })
-export class UserTableComponent implements OnInit {
+export class UserTableComponent implements OnInit, OnChanges {
   @Input() users: User[];
   @Output() onUserEdit = new EventEmitter<User>();
   @Output() onUserDelete = new EventEmitter<string>();
 
   @ViewChild(MatSort) sort: MatSort;
-  dataSource = new MatTableDataSource<Configuration>();
+  dataSource = new MatTableDataSource<User>();
   displayedColumns = [
     "icon",
     "isSecret",
@@ -25,6 +25,13 @@ export class UserTableComponent implements OnInit {
 
   constructor(
   ) { }
+
+  ngOnChanges(changes) {
+    if("users" in changes){
+      this.dataSource.data = this.users;
+      this.dataSource.sort = this.sort;
+    }
+  }
 
   ngOnInit(): void {
   }

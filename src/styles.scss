@@ -17,3 +17,18 @@ body {
   position: fixed !important;
   top: 0;
 }
+
+mat-form-field {
+  &.mat-form-field-appearance-outline {
+    &.mat-form-field-disabled {
+      .mat-form-field-outline {
+        // background-color: $white;
+      }
+      color: $color-gray-200;
+      opacity: .75;
+    }
+    &:not(.mat-form-field-disabled) .mat-form-field-outline {
+      background-color: $white;
+    }
+  }
+}
