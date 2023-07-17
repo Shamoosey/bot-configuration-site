@@ -1,6 +1,10 @@
 <mat-drawer-container hasBackdrop="true" #drawer>
   <mat-drawer [mode]="'over'" position="end">
-    <p>hi</p>
+    <app-manage-trigger
+    [configId]="configId"
+    [triggerId]="editedTriggerId"
+    (onClose)="onDrawerClose()">
+    </app-manage-trigger>
   </mat-drawer>
   <mat-drawer-content>
     <div class="manage-configuration-wrapper">

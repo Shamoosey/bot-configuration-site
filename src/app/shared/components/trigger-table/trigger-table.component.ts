@@ -3,13 +3,14 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { Trigger } from '../../models/trigger';
 import { TriggerService } from '../../services/trigger.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-trigger-table',
   templateUrl: './trigger-table.component.html',
   styleUrls: ['./trigger-table.component.scss']
 })
-export class TriggerTableComponent implements OnInit, OnChanges {
+export class TriggerTableComponent implements OnInit {
   @Input() configId: string;
   @Output() onTriggerEdit = new EventEmitter<Trigger>();
   @Output() onTriggerDelete = new EventEmitter<string>();
@@ -29,21 +30,22 @@ export class TriggerTableComponent implements OnInit, OnChanges {
     "triggerResponses",
   ]
 
+  triggerSubscription: Subscription;
+
   constructor(
     private triggerService: TriggerService
   ) { }
 
   ngOnInit(): void {
-    this.triggerService.getTriggers(this.configId).subscribe(triggers => {
-      this.triggers = triggers;
-    })
+    this.refreshDatasource();
   }
 
-  ngOnChanges(changes) {
-    if("triggers" in changes){
+  refreshDatasource(){
+    this.triggerSubscription = this.triggerService.getTriggers(this.configId).subscribe(triggers => {
+      this.triggers = triggers;
       this.dataSource.data = this.triggers;
       this.dataSource.sort = this.sort;
-    }
+    })
   }
 
   onEditTrigger(trigger:Trigger) {

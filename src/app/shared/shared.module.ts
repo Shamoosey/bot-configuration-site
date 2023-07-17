@@ -8,12 +8,14 @@ import { ConfigurationService } from './services/configuration.service';
 import { TriggerService } from './services/trigger.service';
 import { StatusService } from './services/status.service';
 import { UserService } from './services/user.service';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
     ...SHARED_COMPONENTS
   ],
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     MaterialModule,
     NgSelectModule,

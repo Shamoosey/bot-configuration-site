@@ -57,7 +57,11 @@
         [matTooltipPosition]="'below'"> 
         Trigger Words 
       </mat-header-cell>
-      <mat-cell mat-cell *matCellDef="let element"> {{element.triggerWords}} </mat-cell>
+      <mat-cell mat-cell *matCellDef="let element">
+        <div *ngFor="let tw of element.triggerWords">
+          <div>{{tw}}, </div>
+      </div> 
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="reactEmotes">

@@ -1,0 +1,35 @@
+@import "../../../assets/styles/variables";
+
+.manage-trigger-wrapper {
+  padding: 16px 32px;
+  .header-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    .mat-icon {
+      cursor: pointer;
+
+    }
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    width: 60%;
+    margin: auto;
+    
+    .action-container{
+      button {
+        margin: 0px 8px;
+      }
+    }
+
+    .form-field {
+      color: $color-secondary;
+      margin-bottom: 8px;
+      &.checkbox {
+        margin-bottom: 16px;
+      }
+    }
+  }
+}

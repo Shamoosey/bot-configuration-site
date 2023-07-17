@@ -1,5 +1,5 @@
 export interface Trigger {
-  id: string;
+  id?: string;
   name: string;
   messageDelete: boolean;
   sendRandomResponse: boolean;

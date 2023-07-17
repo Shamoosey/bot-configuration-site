@@ -21,7 +21,11 @@ export class ManageConfigurationComponent implements OnInit {
   @Output() closeButtonClicked = new EventEmitter<void>();
   
   configId: string | null;
-  editedConfig: Configuration | null;
+  
+  editedConfig: Configuration | null = null;
+  editedTriggerId: string | null = null;
+  editedUserId: string | null = null;
+
   triggers: Trigger[] = [];
   users: User[] = [];
 
@@ -161,7 +165,9 @@ export class ManageConfigurationComponent implements OnInit {
   }
   
   onTriggerEdit(trigger: Trigger){
-    this.onDrawerClose();
+    this.drawer.open();
+    this.drawerView = "trigger"
+    this.editedTriggerId = trigger.id;
   }
 
   onTriggerDelete(triggerId:string) {
@@ -169,8 +175,10 @@ export class ManageConfigurationComponent implements OnInit {
     
   }
 
-  onUserEdit(trigger: User){
-    this.onDrawerClose();
+  onUserEdit(user: User){
+    this.drawer.open();
+    this.drawerView = "user"
+    this.editedUserId = user.id;
 
   }
 

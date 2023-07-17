@@ -15,15 +15,15 @@ export class TriggerService {
   }
 
   getTrigger(triggerId: string):Observable<Trigger> {
-    return this.http.get<Trigger>(`${environment.configurationServiceUrl}/Trigger/Get?id=${triggerId}`)
+    return this.http.get<Trigger>(`${environment.configurationServiceUrl}/Trigger/Get?triggerId=${triggerId}`)
   }
 
-  createTrigger(trigger:Trigger) {
-    return this.http.post(`${environment.configurationServiceUrl}/Trigger`, trigger);
+  createTrigger(trigger:Trigger, configId: string) {
+    return this.http.post(`${environment.configurationServiceUrl}/Trigger?configId=${configId}`, trigger);
   }
 
   updateTrigger(triggerId:string, trigger:Trigger) {
-    return this.http.put<boolean>(`${environment.configurationServiceUrl}/Trigger/${triggerId}`, trigger);
+    return this.http.put<boolean>(`${environment.configurationServiceUrl}/Trigger?triggerId=${triggerId}`, trigger);
   }
 
   deleteTrigger(triggerId:string) {

@@ -3,13 +3,14 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-user-table',
   templateUrl: './user-table.component.html',
   styleUrls: ['./user-table.component.scss']
 })
-export class UserTableComponent implements OnInit, OnChanges {
+export class UserTableComponent implements OnInit {
   @Input() configId: string;
   @Output() onUserEdit = new EventEmitter<User>();
   @Output() onUserDelete = new EventEmitter<string>();
@@ -25,20 +26,21 @@ export class UserTableComponent implements OnInit, OnChanges {
     "discordUserId",
   ]
 
+  userSubscription: Subscription;
+
   constructor(
     private userService: UserService
   ) { }
 
-  ngOnChanges(changes) {
-    if("users" in changes){
-      this.dataSource.data = this.users;
-      this.dataSource.sort = this.sort;
-    }
+  ngOnInit(): void {
+    this.refreshDatasource();
   }
 
-  ngOnInit(): void {
-    this.userService.getUsers(this.configId).subscribe(users => {
+  refreshDatasource(){
+    this.userSubscription = this.userService.getUsers(this.configId).subscribe(users => {
       this.users = users;
+      this.dataSource.data = this.users;
+      this.dataSource.sort = this.sort;
     })
   }
 

@@ -1,0 +1,78 @@
+<div class="manage-trigger-wrapper">
+  <div class="header-wrapper">
+    <mat-icon
+      (click)="onDrawerClose()"
+    >close</mat-icon>
+    <h2>{{editMode ? "Manage" : "Create"}} Trigger</h2>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="onSubmit()"
+    >Submit</button>
+  </div>
+  <form [formGroup]="triggerForm">
+    <mat-form-field class="form-field" appearance="outline">
+      <input matInput placeholder="Trigger Name" formControlName="name">
+    </mat-form-field>
+  
+    <mat-checkbox class="checkbox form-field" formControlName="messageDelete" color="primary">
+      Enable Kick Cache
+    </mat-checkbox>
+  
+    <mat-checkbox class="checkbox form-field" formControlName="sendRandomResponse" color="primary">
+      Send Random Response
+    </mat-checkbox>
+  
+    <mat-checkbox class="checkbox form-field" formControlName="ignoreCooldown" color="primary">
+      Ignore Cooldown
+    </mat-checkbox>
+  
+    <mat-form-field class="form-field" appearance="outline">
+      <mat-label>Trigger Words</mat-label>
+      <mat-chip-list #triggerWordList aria-label="TriggerWord selection">
+        <mat-chip *ngFor="let tw of triggerWords" (removed)="removeTriggerWord(tw)">
+          {{tw}}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+        <input placeholder="New Trigger Word..."
+          [matChipInputFor]="triggerWordList"
+          [matChipInputAddOnBlur]="false"
+          (matChipInputTokenEnd)="addTriggerWord($event)">
+      </mat-chip-list>
+    </mat-form-field>
+  
+    <mat-form-field class="form-field" appearance="outline">
+      <mat-label>Trigger Responses</mat-label>
+      <mat-chip-list #triggerResponseList aria-label="TriggerResponse selection">
+        <mat-chip *ngFor="let tr of triggerResponses" (removed)="removeTriggerResponse(tr)">
+          {{tr}}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+        <input placeholder="New Trigger Response..."
+          [matChipInputFor]="triggerResponseList"
+          [matChipInputAddOnBlur]="false"
+          (matChipInputTokenEnd)="addTriggerResponse($event)">
+      </mat-chip-list>
+    </mat-form-field>
+  
+    <mat-form-field class="form-field" appearance="outline">
+      <mat-label>React Emote</mat-label>
+      <mat-chip-list #reactEmoteList aria-label="ReactEmote selection">
+        <mat-chip *ngFor="let re of reactEmotes" (removed)="removeReactEmote(re)">
+          {{re}}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+        <input placeholder="New React Emote..."
+          [matChipInputFor]="reactEmoteList"
+          [matChipInputAddOnBlur]="false"
+          (matChipInputTokenEnd)="addReactEmote($event)">
+      </mat-chip-list>
+    </mat-form-field>
+  </form>
+</div>
