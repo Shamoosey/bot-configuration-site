@@ -109,8 +109,8 @@ export class ManageConfigurationComponent implements OnInit, OnDestroy {
       } as DialogData
     })
 
-    dialogRef.afterClosed().subscribe((x:DialogResult)=> {
-      if(x.primaryButtonClicked){
+    dialogRef.afterClosed().subscribe((x?:DialogResult)=> {
+      if(x?.primaryButtonClicked){
         this.configurationService.deleteConfiguration(this.configId)
           .pipe(takeUntil(this.ngUnsubscribe))
           .subscribe(x => {
@@ -208,8 +208,8 @@ export class ManageConfigurationComponent implements OnInit, OnDestroy {
         } as DialogData
       })
   
-      dialogRef.afterClosed().subscribe((x:DialogResult)=> {
-        if(x.primaryButtonClicked){
+      dialogRef.afterClosed().subscribe((x?:DialogResult)=> {
+        if(x?.primaryButtonClicked){
           this.triggerService.deleteTrigger(triggerId)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((x) => {
@@ -241,8 +241,8 @@ export class ManageConfigurationComponent implements OnInit, OnDestroy {
         } as DialogData
       })
   
-      dialogRef.afterClosed().subscribe((x:DialogResult)=> {
-        if(x.primaryButtonClicked){
+      dialogRef.afterClosed().subscribe((x?:DialogResult)=> {
+        if(x?.primaryButtonClicked){
           this.userService.deleteUser(userId)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((x) => {

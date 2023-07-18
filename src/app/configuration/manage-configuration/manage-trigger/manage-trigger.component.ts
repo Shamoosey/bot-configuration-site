@@ -73,6 +73,7 @@ export class ManageTriggerComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onSubmit(){
+    this.triggerForm.markAllAsTouched();
     if(this.triggerForm.status != "INVALID" && this.editMode) {
       let submittedTrigger: Trigger = {
         name: this.triggerForm.controls["name"].value,

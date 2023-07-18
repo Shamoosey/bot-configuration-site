@@ -63,6 +63,7 @@ export class ManageUserComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onSubmit(){
+    this.userForm.markAllAsTouched();
     if(this.userForm.status != "INVALID" && this.editMode) {
       let submittedUser: User = {
         discordUserId: this.userForm.controls["discordUserId"].value,
