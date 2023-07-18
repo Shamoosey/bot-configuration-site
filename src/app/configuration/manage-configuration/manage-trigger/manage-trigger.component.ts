@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { Observable } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { Trigger } from 'src/app/shared/models/trigger';
 import { TriggerService } from 'src/app/shared/services/trigger.service';
 
@@ -10,11 +10,12 @@ import { TriggerService } from 'src/app/shared/services/trigger.service';
   templateUrl: './manage-trigger.component.html',
   styleUrls: ['./manage-trigger.component.scss']
 })
-export class ManageTriggerComponent implements OnInit {
+export class ManageTriggerComponent implements OnInit, OnChanges, OnDestroy {
   @Input() configId: string;
-  @Input() triggerId: string;
-  @Output() onTriggerAdded = new EventEmitter<void>();
-  @Output() onClose = new EventEmitter<void>();
+  @Input() triggerId: string | null;
+  @Input() editMode: boolean;
+  @Output() onClose = new EventEmitter();
+  @Output() onUpdate = new EventEmitter();
 
   triggerForm: FormGroup;
 
@@ -23,7 +24,10 @@ export class ManageTriggerComponent implements OnInit {
   triggerWords: string[] = [];
   reactEmotes: string[] = [];
 
-  get editMode() {
+  private ngUnsubscribe = new Subject<void>();
+
+
+  get manageMode() {
     return this.triggerId != null;
   }
 
@@ -34,21 +38,26 @@ export class ManageTriggerComponent implements OnInit {
     
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.initializeForm();
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   ngOnChanges(changes) {
     if("triggerId" in changes){
       if(this.triggerId != null){
-        console.log(this.triggerId)
-        this.triggerSerivce.getTrigger(this.triggerId).subscribe(t => {
-          console.log(t)
-          this.trigger = t;
-          this.triggerWords = t.triggerWords ?? []
-          this.reactEmotes = t.reactEmotes ?? []
-          this.triggerResponses = t.triggerResponses ?? []
-          this.initializeForm();
+        this.triggerSerivce.getTrigger(this.triggerId)
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe(t => {
+            this.trigger = t;
+            this.triggerWords = t.triggerWords ?? []
+            this.reactEmotes = t.reactEmotes ?? []
+            this.triggerResponses = t.triggerResponses ?? []
+            this.initializeForm();
         })
       }
     }
@@ -64,8 +73,7 @@ export class ManageTriggerComponent implements OnInit {
   }
 
   onSubmit(){
-    if(this.triggerForm.status != "INVALID") {
-
+    if(this.triggerForm.status != "INVALID" && this.editMode) {
       let submittedTrigger: Trigger = {
         name: this.triggerForm.controls["name"].value,
         messageDelete: this.triggerForm.controls["messageDelete"].value,
@@ -77,14 +85,18 @@ export class ManageTriggerComponent implements OnInit {
       } 
 
       let triggerResponseSub: Observable<any>;
-      if(this.editMode){
+      if(this.manageMode){
         triggerResponseSub = this.triggerSerivce.updateTrigger(this.triggerId, submittedTrigger)
       } else {
         triggerResponseSub = this.triggerSerivce.createTrigger(submittedTrigger, this.configId)
       }
 
-      triggerResponseSub.subscribe(x => {
-        this.resetForm();
+      triggerResponseSub
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(x => {
+          this.resetForm();
+          this.onUpdate.emit();
+          this.onClose.emit();
       })
     }
   }

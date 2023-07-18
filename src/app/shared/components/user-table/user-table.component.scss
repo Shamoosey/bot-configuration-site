@@ -1,4 +1,4 @@
-@import "../../../assets/styles/variables";
+@import "variables";
 
 .user-table-wrapper  {
 
@@ -15,8 +15,16 @@
     box-shadow: 1px 1px 9px 1px rgba(0, 0, 0, 0.28);
 
     .mat-column-icon {
-      cursor: pointer;
       flex: 0 5% !important;
+      &.edit-mode {
+        cursor: pointer;
+      }
+      .icons-wrapper {
+        display: flex;
+        div {
+          margin-right: 8px;
+        }
+      }
     }
     .mat-column-isSecret,
     .mat-column-userName,

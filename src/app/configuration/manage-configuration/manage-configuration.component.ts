@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ConfigurationService } from '../../shared/services/configuration.service';
@@ -10,13 +10,16 @@ import { DialogResult } from '../../shared/models/dialog-result';
 import { Trigger } from '../../shared/models/trigger';
 import { User } from '../../shared/models/user';
 import { Configuration } from 'src/app/shared/models/configuration';
+import { Subject, Subscription, concat, takeUntil } from 'rxjs';
+import { TriggerService } from 'src/app/shared/services/trigger.service';
+import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'app-manage-configuration',
   templateUrl: './manage-configuration.component.html',
   styleUrls: ['./manage-configuration.component.scss']
 })
-export class ManageConfigurationComponent implements OnInit {
+export class ManageConfigurationComponent implements OnInit, OnDestroy {
   @ViewChild("drawer") drawer: MatDrawer;
   @Output() closeButtonClicked = new EventEmitter<void>();
   
@@ -33,13 +36,19 @@ export class ManageConfigurationComponent implements OnInit {
 
   drawerView: "user" | "trigger" | null = null;
 
-  get editMode() {
+  private ngUnsubscribe = new Subject<void>();
+  
+  editMode = false;
+
+  get manageMode() {
     return this.configId != null;
   }
 
   constructor(
     private fb: FormBuilder,
     private configurationService: ConfigurationService,
+    private triggerService: TriggerService,
+    private userService: UserService,
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog
@@ -50,13 +59,24 @@ export class ManageConfigurationComponent implements OnInit {
   ngOnInit(): void {
     this.editedConfig = null;
     this.configId = this.route.snapshot.queryParamMap.get("id");
-    this.configurationService.getConfiguation(this.configId).subscribe((config) => {
-      this.editedConfig = config;
-      this.triggers = config?.triggers
-      this.users = config?.users
-      this.initializeForm();
-    });
+    this.updateData();
     this.initializeForm();
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  updateData() {
+    this.configurationService.getConfiguation(this.configId)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((config) => {
+        this.editedConfig = config;
+        this.triggers = config?.triggers
+        this.users = config?.users
+        this.initializeForm();
+    });
   }
 
 
@@ -91,8 +111,10 @@ export class ManageConfigurationComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((x:DialogResult)=> {
       if(x.primaryButtonClicked){
-        this.configurationService.deleteConfiguration(this.configId).subscribe(x => {
-          this.router.navigate(["./"])
+        this.configurationService.deleteConfiguration(this.configId)
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe(x => {
+            this.router.navigate(["./"])
         })
       }
     })
@@ -117,9 +139,7 @@ export class ManageConfigurationComponent implements OnInit {
   }
 
   onSubmit(){
-    this.configForm.updateValueAndValidity();
-    
-    if(this.configForm.status != "INVALID") {
+    if(this.configForm.status != "INVALID" && this.editMode) {
       const kickCacheEnabled = this.configForm.controls["enableKickCache"].value;
       let config: Configuration = {
         serverId: this.configForm.controls["serverId"].value,
@@ -134,15 +154,18 @@ export class ManageConfigurationComponent implements OnInit {
         users: this.users
       }
 
-      if(this.editMode) {
-        this.configurationService.updateConfiguration(this.configId, config).subscribe((x) => {
-          console.log(x)
-          // this.router.navigate(["./"])
+      if(this.manageMode) {
+        this.configurationService.updateConfiguration(this.configId, config)
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe((x) => {
+            console.log(x)
         })
       } else {
-        this.configurationService.createConfiguration(config).subscribe((x) => {
-          console.log(x)
-          // this.router.navigate(["./"])
+        this.configurationService.createConfiguration(config)
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe((x) => {
+            console.log(x)
+            this.router.navigate(["./"])
         })
       }
 
@@ -159,6 +182,10 @@ export class ManageConfigurationComponent implements OnInit {
     this.drawerView = "user"
   }
 
+  onUserUpdate() {
+    this.updateData();
+  }
+
   onDrawerClose() {
     this.drawer.close();
     this.drawerView = null;;
@@ -171,20 +198,59 @@ export class ManageConfigurationComponent implements OnInit {
   }
 
   onTriggerDelete(triggerId:string) {
-    this.onDrawerClose();
-    
+    if(this.editMode){
+      const dialogRef = this.dialog.open(DialogComponent, {
+        data: {
+          title: "Delete Trigger?",
+          text: "Are you sure you'd like to delete this Trigger? \nThis operation is irreversible.",
+          primaryButtonText: "Yes, delete",
+          secondaryButtonText: "No, cancel"
+        } as DialogData
+      })
+  
+      dialogRef.afterClosed().subscribe((x:DialogResult)=> {
+        if(x.primaryButtonClicked){
+          this.triggerService.deleteTrigger(triggerId)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((x) => {
+              this.updateData();
+          })
+        }
+      })
+    }
+  }
+
+  onTriggerUpdate(){
+    this.updateData();
   }
 
   onUserEdit(user: User){
     this.drawer.open();
     this.drawerView = "user"
     this.editedUserId = user.id;
-
   }
 
   onUserDelete(userId:string) {
-    this.onDrawerClose();
-    
+    if(this.editMode){
+      const dialogRef = this.dialog.open(DialogComponent, {
+        data: {
+          title: "Delete User?",
+          text: "Are you sure you'd like to delete this user? \nThis operation is irreversible.",
+          primaryButtonText: "Yes, delete",
+          secondaryButtonText: "No, cancel"
+        } as DialogData
+      })
+  
+      dialogRef.afterClosed().subscribe((x:DialogResult)=> {
+        if(x.primaryButtonClicked){
+          this.userService.deleteUser(userId)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((x) => {
+              this.updateData();
+          })
+        }
+      })
+    }
   }
 
 }

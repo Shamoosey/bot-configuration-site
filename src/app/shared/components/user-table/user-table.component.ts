@@ -11,37 +11,35 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./user-table.component.scss']
 })
 export class UserTableComponent implements OnInit {
-  @Input() configId: string;
+  @Input() users: User[];
+  @Input() editMode: boolean;
   @Output() onUserEdit = new EventEmitter<User>();
   @Output() onUserDelete = new EventEmitter<string>();
-
-  users: User[];
 
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource<User>();
   displayedColumns = [
     "icon",
-    "isSecret",
     "userName",
     "discordUserId",
+    "isSecret",
   ]
 
-  userSubscription: Subscription;
-
   constructor(
-    private userService: UserService
   ) { }
 
   ngOnInit(): void {
-    this.refreshDatasource();
   }
 
+  ngOnChanges(changes: SimpleChanges){
+    if("users" in changes){
+      this.refreshDatasource();
+    }
+  }
+  
   refreshDatasource(){
-    this.userSubscription = this.userService.getUsers(this.configId).subscribe(users => {
-      this.users = users;
-      this.dataSource.data = this.users;
-      this.dataSource.sort = this.sort;
-    })
+    this.dataSource.data = this.users;
+    this.dataSource.sort = this.sort;
   }
 
   onEditUser(User:User) {

@@ -2,22 +2,16 @@
   <table mat-table [dataSource]="dataSource" matSort >
     <ng-container matColumnDef="icon">
       <mat-header-cell *matHeaderCellDef></mat-header-cell>
-      <mat-cell *matCellDef="let element" (click)="onEditUser(element)">
-        <mat-icon>edit</mat-icon>
+      <mat-cell *matCellDef="let element" [ngClass]="{'edit-mode': editMode}">
+        <div *ngIf="editMode" class="icons-wrapper">
+          <div (click)="onEditUser(element)">
+            <mat-icon>edit</mat-icon>
+          </div>
+          <div (click)="onDeleteUser(element.id)">
+            <mat-icon>delete</mat-icon>
+          </div>
+        </div>
       </mat-cell>
-      <mat-cell *matCellDef="let element" (click)="onDeleteUser(element.id)">
-        <mat-icon>delete</mat-icon>
-      </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="isSecret">
-      <mat-header-cell *matHeaderCellDef 
-        mat-sort-header 
-        [matTooltip]="'Is user a secret user'" 
-        [matTooltipPosition]="'below'"> 
-        Is Secret 
-      </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.isSecret}} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="userName">
@@ -38,6 +32,16 @@
         Discord UserId
       </mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.discordUserId}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="isSecret">
+      <mat-header-cell *matHeaderCellDef 
+        mat-sort-header 
+        [matTooltip]="'Is user a secret user'" 
+        [matTooltipPosition]="'below'"> 
+        Is Secret 
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.isSecert}} </mat-cell>
     </ng-container>
   
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

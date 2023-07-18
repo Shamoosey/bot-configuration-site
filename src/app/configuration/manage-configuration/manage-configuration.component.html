@@ -1,56 +1,110 @@
 <mat-drawer-container hasBackdrop="true" #drawer>
   <mat-drawer [mode]="'over'" position="end">
     <app-manage-trigger
-    [configId]="configId"
-    [triggerId]="editedTriggerId"
-    (onClose)="onDrawerClose()">
-    </app-manage-trigger>
+      *ngIf="drawerView == 'trigger'"
+      [configId]="configId"
+      [triggerId]="editedTriggerId"
+      [editMode]="editMode"
+      (onClose)="onDrawerClose()"
+      (onUpdate)="onTriggerUpdate()"
+    ></app-manage-trigger>
+    <app-manage-user
+      *ngIf="drawerView == 'user'"
+      [configId]="configId"
+      [userId]="editedUserId"
+      [editMode]="editMode"
+      (onClose)="onDrawerClose()"
+      (onUpdate)="onUserUpdate()"
+    ></app-manage-user>
   </mat-drawer>
   <mat-drawer-content>
     <div class="manage-configuration-wrapper">
       <div class="content-wrapper">
         <div class="form-wrapper grid-item">
           <div class="header-wrapper centered">
-            <h2>{{editMode ? "Manage" : "Create"}} Configuration</h2>
+            <h2>{{manageMode ? "Manage" : "Create"}} Configuration</h2>
+          </div>
+          <div class="edit-mode-toggle">
+            <mat-slide-toggle color="primary" (change)="editMode = $event.checked">
+              Edit Mode
+            </mat-slide-toggle>
           </div>
           <form [formGroup]="configForm">
             <mat-form-field class="form-field" appearance="outline">
-              <input matInput placeholder="Server ID" formControlName="serverId">
+              <mat-label>Server ID</mat-label>
+              <input 
+                matInput 
+                placeholder="Server ID" 
+                formControlName="serverId" 
+                [readonly]="!editMode">
             </mat-form-field>
 
             <mat-form-field class="form-field" appearance="outline">
-              <input matInput placeholder="Default Channel" formControlName="defaultChannel">
+              <mat-label>Default Channel</mat-label>
+              <input 
+                matInput 
+                placeholder="Default Channel" 
+                formControlName="defaultChannel" 
+                [readonly]="!editMode">
             </mat-form-field>
           
-            <mat-checkbox class="checkbox form-field" formControlName="enableKickCache" color="primary" (change)="onKickCacheClick()">Enable Kick Cache</mat-checkbox>
+            <mat-checkbox 
+              class="checkbox form-field" 
+              formControlName="enableKickCache" 
+              color="primary" 
+              (change)="onKickCacheClick()"
+              [disabled]="!editMode">
+              Enable Kick Cache
+            </mat-checkbox>
           
             <mat-form-field class="form-field" appearance="outline">
-              <input matInput placeholder="Kick Cache Days" formControlName="kickCacheDays">
+              <mat-label>Kick Cacche Days</mat-label>
+              <input 
+                matInput 
+                placeholder="Kick Cache Days" 
+                formControlName="kickCacheDays" 
+                [readonly]="!editMode">
             </mat-form-field>
           
             <mat-form-field class="form-field" appearance="outline">
-              <input matInput placeholder="Kick Cache Hours" formControlName="kickCacheHours">
+              <mat-label>Kick Cacche Hours</mat-label>
+              <input 
+                matInput 
+                placeholder="Kick Cache Hours" 
+                formControlName="kickCacheHours" 
+                [readonly]="!editMode">
             </mat-form-field>
           
             <mat-form-field class="form-field" appearance="outline">
-              <input matInput placeholder="Kick Cache Server Message" formControlName="kickCacheServerMessage">
+              <mat-label>Kick Cacche Server Message</mat-label>
+              <input 
+                matInput 
+                placeholder="Kick Cache Server Message" 
+                formControlName="kickCacheServerMessage" 
+                [readonly]="!editMode">
             </mat-form-field>
           
             <mat-form-field class="form-field" appearance="outline">
-              <input matInput placeholder="Kick Cache User Message" formControlName="kickCacheUserMessage">
+              <mat-label>Kick Cacche User Message</mat-label>
+              <input 
+                matInput 
+                placeholder="Kick Cache User Message" 
+                formControlName="kickCacheUserMessage" 
+                [readonly]="!editMode">
             </mat-form-field>
 
             <div class="action-container">
               <button
                 mat-flat-button
                 (click)="onSubmit()"
+                [disabled]="!editMode"
                 color="primary">
-                Submit
+                {{manageMode ? "Update" : "Submit"}}
               </button>
-              
               <button
-                *ngIf="editMode"
+                *ngIf="manageMode"
                 mat-stroked-button
+                [disabled]="!editMode"
                 (click)="onDeleteConfig()"
                 color="primary">
                 Delete
@@ -65,11 +119,13 @@
             <button
               mat-flat-button
               (click)="onCreateTrigger()"
+              [disabled]="!editMode"
               color="primary"
             >Add Trigger</button>
           </div>
           <app-trigger-table
-            [configId]="configId"
+            [triggers]="triggers"
+            [editMode]="editMode"
             (onTriggerEdit)="onTriggerEdit($event)"
             (onTriggerDelete)="onTriggerDelete($event)"
           ></app-trigger-table>
@@ -80,11 +136,13 @@
             <button
               mat-flat-button
               (click)="onCreateUser()"
+              [disabled]="!editMode"
               color="primary"
             >Add User</button>
           </div>
           <app-user-table
-            [configId]="configId"
+            [users]="users"
+            [editMode]="editMode"
             (onUserEdit)="onUserEdit($event)"
             (onUserDelete)="onUserDelete($event)"
         ></app-user-table>

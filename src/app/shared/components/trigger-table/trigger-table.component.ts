@@ -2,20 +2,17 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } 
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { Trigger } from '../../models/trigger';
-import { TriggerService } from '../../services/trigger.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-trigger-table',
   templateUrl: './trigger-table.component.html',
   styleUrls: ['./trigger-table.component.scss']
 })
-export class TriggerTableComponent implements OnInit {
-  @Input() configId: string;
+export class TriggerTableComponent implements OnInit, OnChanges {
+  @Input() triggers: Trigger[];
+  @Input() editMode: boolean;
   @Output() onTriggerEdit = new EventEmitter<Trigger>();
   @Output() onTriggerDelete = new EventEmitter<string>();
-
-  triggers: Trigger[];
 
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource<Trigger>();
@@ -30,22 +27,23 @@ export class TriggerTableComponent implements OnInit {
     "triggerResponses",
   ]
 
-  triggerSubscription: Subscription;
 
   constructor(
-    private triggerService: TriggerService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.refreshDatasource();
   }
 
+  ngOnChanges(changes){
+    if("triggers" in changes) {
+      this.refreshDatasource();
+    }
+  }
+
   refreshDatasource(){
-    this.triggerSubscription = this.triggerService.getTriggers(this.configId).subscribe(triggers => {
-      this.triggers = triggers;
-      this.dataSource.data = this.triggers;
-      this.dataSource.sort = this.sort;
-    })
+    this.dataSource.data = this.triggers;
+    this.dataSource.sort = this.sort;
   }
 
   onEditTrigger(trigger:Trigger) {

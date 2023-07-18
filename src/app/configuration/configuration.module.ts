@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CONFIGURATION_COMPONENTS } from '.';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MaterialModule } from 'src/app/assets/material.module';
-import { ConfigurationService } from '../shared/services/configuration.service';
 import { SharedModule } from '../shared/shared.module';
 import { ConfigurationRoutingModule } from './configuration-routing.module';
 import { CommonModule } from '@angular/common';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 @NgModule({
   declarations: [
