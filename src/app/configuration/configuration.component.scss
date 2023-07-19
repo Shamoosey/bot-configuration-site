@@ -32,15 +32,14 @@ mat-drawer {
 
   .mat-column-edit-icon {
     cursor: pointer;
-    flex: 1 1;
   }
-  .mat-column-defaultChannel,
+
   .mat-column-enableKickCache,
-  .mat-column-kickCacheUserMessage,
-  .mat-column-kickCacheServerMessage,
-  .mat-column-kickCacheHours,
   .mat-column-kickCacheDays,
-  .mat-column-serverName {
-    flex: 2 1;
+  .mat-column-kickCacheHours,
+  .mat-column-triggerCount,
+  .mat-column-edit-icon, 
+  .mat-column-userCount {
+    flex: 0.5 1;
   }
 }

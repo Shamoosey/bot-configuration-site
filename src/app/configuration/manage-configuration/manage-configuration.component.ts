@@ -36,6 +36,13 @@ export class ManageConfigurationComponent implements OnInit, OnDestroy {
 
   drawerView: "user" | "trigger" | null = null;
 
+  kickCacheControls = [
+    "kickCacheDays",
+    "kickCacheHours",
+    "kickCacheServerMessage",
+    "kickCacheUserMessage",
+  ]
+
   private ngUnsubscribe = new Subject<void>();
   
   editMode = false;
@@ -58,8 +65,12 @@ export class ManageConfigurationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.editedConfig = null;
-    this.configId = this.route.snapshot.queryParamMap.get("id");
-    this.updateData();
+    this.route.queryParamMap.subscribe(data => {
+      this.configId = data.get("id")
+      if(this.configId){
+        this.updateData();
+      }
+    })
     this.initializeForm();
   }
 
@@ -73,8 +84,8 @@ export class ManageConfigurationComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((config) => {
         this.editedConfig = config;
-        this.triggers = config?.triggers
-        this.users = config?.users
+        this.triggers = config?.triggers ?? []
+        this.users = config?.users ?? []
         this.initializeForm();
     });
   }
@@ -84,11 +95,11 @@ export class ManageConfigurationComponent implements OnInit, OnDestroy {
     this.configForm = this.fb.group({
       "serverId": new FormControl(this.editedConfig?.serverId ?? "", [ Validators.required ]),
       "defaultChannel": new FormControl(this.editedConfig?.defaultChannel ??"", [ Validators.required ]),
-      "enableKickCache": new FormControl(this.editedConfig?.enableKickCache, {}),
-      "kickCacheDays": new FormControl(this.editedConfig?.kickCacheDays, {}),
-      "kickCacheHours": new FormControl(this.editedConfig?.kickCacheHours, {}),
-      "kickCacheServerMessage": new FormControl(this.editedConfig?.kickCacheServerMessage, {}),
-      "kickCacheUserMessage": new FormControl(this.editedConfig?.kickCacheUserMessage, {}),
+      "enableKickCache": new FormControl(this.editedConfig?.enableKickCache),
+      "kickCacheDays": new FormControl(this.editedConfig?.kickCacheDays),
+      "kickCacheHours": new FormControl(this.editedConfig?.kickCacheHours),
+      "kickCacheServerMessage": new FormControl(this.editedConfig?.kickCacheServerMessage),
+      "kickCacheUserMessage": new FormControl(this.editedConfig?.kickCacheUserMessage),
     })
     this.onKickCacheClick();
   }
@@ -121,16 +132,16 @@ export class ManageConfigurationComponent implements OnInit, OnDestroy {
   }
 
   onKickCacheClick() {
-    if(this.configForm.controls["enableKickCache"].value){
-      this.configForm.controls["kickCacheDays"].enable();
-      this.configForm.controls["kickCacheHours"].enable();
-      this.configForm.controls["kickCacheServerMessage"].enable();
-      this.configForm.controls["kickCacheUserMessage"].enable();
-    } else {
-      this.configForm.controls["kickCacheDays"].disable();
-      this.configForm.controls["kickCacheHours"].disable();
-      this.configForm.controls["kickCacheServerMessage"].disable();
-      this.configForm.controls["kickCacheUserMessage"].disable();
+    for(var cntrlName of this.kickCacheControls){
+      if(this.configForm.controls["enableKickCache"].value){
+        this.configForm.controls[cntrlName].enable();
+        this.configForm.controls[cntrlName].addValidators([Validators.required]);
+      } else {
+        this.configForm.controls[cntrlName].disable();
+        this.configForm.controls[cntrlName].removeValidators([Validators.required]);
+        this.configForm.controls[cntrlName].markAsUntouched();
+      }
+      this.configForm.controls[cntrlName].updateValueAndValidity()
     }
   }
 

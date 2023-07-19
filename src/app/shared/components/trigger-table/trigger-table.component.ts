@@ -10,7 +10,7 @@ import { Trigger } from '../../models/trigger';
 })
 export class TriggerTableComponent implements OnInit, OnChanges {
   @Input() triggers: Trigger[];
-  @Input() editMode: boolean;
+  @Input() editMode: boolean = true;
   @Output() onTriggerEdit = new EventEmitter<Trigger>();
   @Output() onTriggerDelete = new EventEmitter<string>();
 

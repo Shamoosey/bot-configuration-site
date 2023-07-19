@@ -38,7 +38,7 @@
     <ng-container matColumnDef="enableKickCache">
       <mat-header-cell *matHeaderCellDef
         mat-sort-header 
-        [matTooltip]="'Kick cache feature enabled, this feature will auto kick users depending on configured values'" 
+        [matTooltip]="'Kick users with no assigned role after specified allocated time'" 
         [matTooltipPosition]="'below'"> 
         Kick Cache Enabled 
       </mat-header-cell>
@@ -48,7 +48,7 @@
     <ng-container matColumnDef="kickCacheUserMessage">
       <mat-header-cell *matHeaderCellDef
         mat-sort-header 
-        [matTooltip]="'Message to send to the user after they have been kicked via KickerCache'" 
+        [matTooltip]="'Message sent to user after they have been kicked'" 
         [matTooltipPosition]="'below'"> 
         Kicked User Message 
       </mat-header-cell>
@@ -58,7 +58,7 @@
     <ng-container matColumnDef="kickCacheServerMessage">
       <mat-header-cell *matHeaderCellDef 
         mat-sort-header 
-        [matTooltip]="'Message to send to the default server channel after the user has been kicked via KickerCache'" 
+        [matTooltip]="'Message sent to server after a user has been kicked'" 
         [matTooltipPosition]="'below'"> 
         Kicked Cache Server Message 
       </mat-header-cell>
@@ -68,9 +68,9 @@
     <ng-container matColumnDef="kickCacheHours">
       <mat-header-cell *matHeaderCellDef
         mat-sort-header 
-        [matTooltip]="''" 
+        [matTooltip]="'Hours before kicking users with no roles\nUsed to edit roles without people getting kicked'"
         [matTooltipPosition]="'below'"> 
-        Kicked Cache Hours Message 
+        Kicked Cache Hours 
       </mat-header-cell>
       <mat-cell mat-cell *matCellDef="let element"> {{element.enableKickCache ? element.kickCacheHours : ""}} </mat-cell>
     </ng-container>
@@ -78,11 +78,31 @@
     <ng-container matColumnDef="kickCacheDays">
       <mat-header-cell *matHeaderCellDef 
         mat-sort-header 
-        [matTooltip]="''" 
+        [matTooltip]="'Days that user needs to be in server before they are cached to be kicked'" 
         [matTooltipPosition]="'below'"> 
-        Kicked Cache Days Message
+        Kicked Cache Days
       </mat-header-cell>
       <mat-cell mat-cell *matCellDef="let element"> {{element.enableKickCache ? element.kickCacheDays : ""}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="triggerCount">
+      <mat-header-cell *matHeaderCellDef 
+        mat-sort-header 
+        [matTooltip]="'Count of the configurations triggers'" 
+        [matTooltipPosition]="'below'"> 
+        Trigger Count
+      </mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let element"> {{ element.triggers.length }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="userCount">
+      <mat-header-cell *matHeaderCellDef 
+        mat-sort-header 
+        [matTooltip]="'Count of the configurations users'" 
+        [matTooltipPosition]="'below'"> 
+        User Count
+      </mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let element"> {{ element.users.length }} </mat-cell>
     </ng-container>
   
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

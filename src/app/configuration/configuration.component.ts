@@ -23,6 +23,8 @@ export class ConfigurationComponent implements OnInit {
     "kickCacheServerMessage",
     "kickCacheHours",
     "kickCacheDays",
+    "triggerCount",
+    "userCount"
   ] 
 
   constructor(
