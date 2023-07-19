@@ -1,0 +1,21 @@
+@import "variables";
+
+.dialog-wrapper {
+  height: 200px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  h2 {
+    padding: 0px;
+    margin: 0px;
+  }
+  span {
+    white-space: pre-line
+  }
+  .button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+}

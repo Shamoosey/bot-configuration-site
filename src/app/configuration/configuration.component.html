@@ -1,0 +1,111 @@
+<div class="configuration-wrapper">
+  <div class="header-content">
+    <h2>Configuration List</h2>
+    <button
+      mat-flat-button
+      color="primary"
+      [routerLink]="'manage-configuration'"
+    >Create Configuration</button>
+  </div>
+  <table mat-table [dataSource]="dataSource" matSort >
+    <ng-container matColumnDef="edit-icon">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let element" >
+        <mat-icon (click)="onEditConfig(element)">edit</mat-icon>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="serverName">
+      <mat-header-cell *matHeaderCellDef 
+        mat-sort-header 
+        [matTooltip]="'Name of the server'" 
+        [matTooltipPosition]="'below'"> 
+        Server Name 
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="defaultChannel">
+      <mat-header-cell *matHeaderCellDef 
+        mat-sort-header 
+        [matTooltip]="'Default channel to send messages to'" 
+        [matTooltipPosition]="'below'"> 
+        Default Channel 
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.defaultChannel}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="enableKickCache">
+      <mat-header-cell *matHeaderCellDef
+        mat-sort-header 
+        [matTooltip]="'Kick users with no assigned role after specified allocated time'" 
+        [matTooltipPosition]="'below'"> 
+        Kick Cache Enabled 
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.enableKickCache}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="kickCacheUserMessage">
+      <mat-header-cell *matHeaderCellDef
+        mat-sort-header 
+        [matTooltip]="'Message sent to user after they have been kicked'" 
+        [matTooltipPosition]="'below'"> 
+        Kicked User Message 
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.enableKickCache ? element.kickCacheUserMessage : ""}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="kickCacheServerMessage">
+      <mat-header-cell *matHeaderCellDef 
+        mat-sort-header 
+        [matTooltip]="'Message sent to server after a user has been kicked'" 
+        [matTooltipPosition]="'below'"> 
+        Kicked Cache Server Message 
+      </mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let element"> {{element.enableKickCache ? element.kickCacheServerMessage : ""}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="kickCacheHours">
+      <mat-header-cell *matHeaderCellDef
+        mat-sort-header 
+        [matTooltip]="'Hours before kicking users with no roles\nUsed to edit roles without people getting kicked'"
+        [matTooltipPosition]="'below'"> 
+        Kicked Cache Hours 
+      </mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let element"> {{element.enableKickCache ? element.kickCacheHours : ""}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="kickCacheDays">
+      <mat-header-cell *matHeaderCellDef 
+        mat-sort-header 
+        [matTooltip]="'Days that user needs to be in server before they are cached to be kicked'" 
+        [matTooltipPosition]="'below'"> 
+        Kicked Cache Days
+      </mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let element"> {{element.enableKickCache ? element.kickCacheDays : ""}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="triggerCount">
+      <mat-header-cell *matHeaderCellDef 
+        mat-sort-header 
+        [matTooltip]="'Count of the configurations triggers'" 
+        [matTooltipPosition]="'below'"> 
+        Trigger Count
+      </mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let element"> {{ element.triggers.length }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="userCount">
+      <mat-header-cell *matHeaderCellDef 
+        mat-sort-header 
+        [matTooltip]="'Count of the configurations users'" 
+        [matTooltipPosition]="'below'"> 
+        User Count
+      </mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let element"> {{ element.users.length }} </mat-cell>
+    </ng-container>
+  
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </table>
+</div>

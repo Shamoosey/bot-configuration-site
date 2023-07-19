@@ -1,0 +1,17 @@
+@import "variables";
+
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 800px;
+  overflow-y: auto;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  background-color: $color-light;
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+  }
+}

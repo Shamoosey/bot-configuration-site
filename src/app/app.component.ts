@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './authentication/auth-service';
-import { UserState } from './models/user-state';
+
 
 @Component({
   selector: 'app-root',

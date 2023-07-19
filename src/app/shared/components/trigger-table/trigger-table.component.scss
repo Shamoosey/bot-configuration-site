@@ -1,0 +1,40 @@
+@import "variables";
+
+.trigger-table-wrapper  {
+
+  h2, h3 {
+    margin: 0px;
+    padding: 0px;
+  }
+  
+  .mat-table {
+    margin: 8px auto;
+    height: 350px;
+    width: 100%;
+    overflow-y: scroll;
+    box-shadow: 1px 1px 9px 1px rgba(0, 0, 0, 0.28);
+
+    .mat-column-icon {
+      flex: 0 5% !important;
+      &.edit-mode {
+        cursor: pointer;
+      }
+      .icons-wrapper {
+        display: flex;
+        div {
+          margin-right: 8px;
+        }
+      }    
+    }
+    .mat-column-name,
+    .mat-column-messageDelete,
+    .mat-column-sendRandomResponse,
+    .mat-column-ignoreCooldown,
+    .mat-column-triggerWords,
+    .mat-column-reactEmotes,
+    .mat-column-triggerResponses {
+      flex: 4 1;
+    }
+  }
+
+}

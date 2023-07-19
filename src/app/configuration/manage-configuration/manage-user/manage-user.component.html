@@ -1,0 +1,26 @@
+<div class="manage-user-wrapper">
+  <div class="header-wrapper">
+    <mat-icon
+      (click)="onDrawerClose()"
+    >close</mat-icon>
+    <h2>{{manageMode ? "Manage" : "Create"}} User</h2>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="onSubmit()"
+    >Submit</button>
+  </div>
+  <form [formGroup]="userForm">
+    <mat-form-field class="form-field" appearance="outline">
+      <mat-label>Username</mat-label>
+      <input matInput placeholder="Username" formControlName="username" >
+    </mat-form-field>
+    <mat-form-field class="form-field" appearance="outline">
+      <mat-label>Discord UserId</mat-label>
+      <input matInput placeholder="Discord UserId" formControlName="discordUserId" >
+    </mat-form-field>
+    <mat-checkbox class="checkbox form-field" formControlName="isSecret" color="primary">
+      Is Secret
+    </mat-checkbox>
+  </form>
+</div>

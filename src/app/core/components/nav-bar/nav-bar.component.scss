@@ -1,0 +1,24 @@
+@import "variables";
+
+.nav-wrapper {
+  min-height: 64px;
+  background-color: $color-light;
+  .nav-content {
+    height: 64px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0px 24px;
+    .nav-item {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      .nav-title {
+        margin: 0px;
+        padding: 4px 8px;
+        &:hover{
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

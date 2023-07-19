@@ -1,0 +1,95 @@
+<div class="trigger-table-wrapper">
+  <table mat-table [dataSource]="dataSource" matSort >
+    <ng-container matColumnDef="icon">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let element" [ngClass]="{'edit-mode': editMode}">
+        <div *ngIf="editMode" class="icons-wrapper">
+          <div (click)="onEditTrigger(element)">
+            <mat-icon>edit</mat-icon>
+          </div>
+          <div (click)="onDeleteTrigger(element.id)">
+            <mat-icon>delete</mat-icon>
+          </div>
+        </div>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef 
+        mat-sort-header 
+        [matTooltip]="'Trigger Name'" 
+        [matTooltipPosition]="'below'"> 
+        Trigger Name 
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="messageDelete">
+      <mat-header-cell *matHeaderCellDef 
+        mat-sort-header 
+        [matTooltip]="'Delete message on trigger'" 
+        [matTooltipPosition]="'below'"> 
+        Message Delete
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.messageDelete}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="sendRandomResponse">
+      <mat-header-cell *matHeaderCellDef
+        mat-sort-header 
+        [matTooltip]="'Send a random response from the responses list'" 
+        [matTooltipPosition]="'below'"> 
+        Send Random Response 
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.sendRandomResponse}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="ignoreCooldown">
+      <mat-header-cell *matHeaderCellDef
+        mat-sort-header 
+        [matTooltip]="'Ignore trigger cool down if trigger was sent in last 20 messages'" 
+        [matTooltipPosition]="'below'"> 
+        Ignore Cooldown
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.ignoreCooldown}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="triggerWords">
+      <mat-header-cell *matHeaderCellDef 
+        mat-sort-header 
+        [matTooltip]="'Comma delimited list of TriggerWords'" 
+        [matTooltipPosition]="'below'"> 
+        Trigger Words 
+      </mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let element">
+        <div *ngFor="let tw of element.triggerWords">
+          <div>{{tw}}, </div>
+      </div> 
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="reactEmotes">
+      <mat-header-cell *matHeaderCellDef
+        mat-sort-header 
+        [matTooltip]="'Comma delimited list of ReactEmotes'" 
+        [matTooltipPosition]="'below'"> 
+        React Emotes 
+      </mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let element"> {{element.reactEmotes}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="triggerResponses">
+      <mat-header-cell *matHeaderCellDef 
+        mat-sort-header 
+        [matTooltip]="'Comma delimited list of TriggerResponses'" 
+        [matTooltipPosition]="'below'"> 
+        Trigger Responses
+      </mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let element"> {{element.triggerResponses}} </mat-cell>
+    </ng-container>
+  
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </table>
+</div>
+
