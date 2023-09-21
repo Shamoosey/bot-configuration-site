@@ -4,7 +4,10 @@
 
 export const environment = {
   production: false,
-  configurationServiceUrl: "https://localhost:50501"
+  configurationServiceUrl: "https://localhost:50501",
+  authDomain: "dev-4ra33i4g.us.auth0.com",
+  authClientId: "GeNLysNMkIoTjxZlcbCn40PgpIZxgZ9q",
+  authRedirectUrl: "http://localhost:4200/configuration"
 };
 
 /*

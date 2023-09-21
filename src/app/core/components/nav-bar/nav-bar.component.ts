@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
   selector: 'app-nav-bar',
@@ -8,11 +9,21 @@ import { Component, OnInit } from '@angular/core';
 export class NavBarComponent implements OnInit {
 
   constructor(
+    private authService: AuthService
   ) { }
 
-  ngOnInit(): void {
+  get isAuthenticated(){ 
+    return this.authService.isAuthenticated$;
+  }
+
+  ngOnInit() {
   }
 
   logout(){
+    this.authService.logout({
+      logoutParams: {
+        returnTo: "http://localhost:4200"
+      }
+    });
   }
 }

@@ -10,6 +10,8 @@ import { ConfigurationModule } from './configuration/configuration.module';
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core/core.module';
 import { MaterialModule } from 'src/app/shared/material.module';
+import { AuthModule } from '@auth0/auth0-angular';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,14 @@ import { MaterialModule } from 'src/app/shared/material.module';
     HttpClientModule,
     ConfigurationModule,
     SharedModule,
-    CoreModule
+    CoreModule,
+    AuthModule.forRoot({
+      domain: environment.authDomain,
+      clientId: environment.authClientId,
+      authorizationParams: {
+        redirect_uri: window.location.origin
+      }
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]

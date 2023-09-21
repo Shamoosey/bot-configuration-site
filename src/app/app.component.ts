@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './authentication/auth-service';
+import { Router } from '@angular/router';
+import { AuthService } from '@auth0/auth0-angular';
 
 
 @Component({
@@ -8,15 +9,16 @@ import { AuthService } from './authentication/auth-service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  authenticated = false;
-
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ){}
 
   ngOnInit(){
-    this.authService.isAuthenticatedSubject.subscribe((authenticated: boolean) => {
-      this.authenticated = authenticated;
-    })
+
+  }
+
+  get isAuthenticated() {
+    return this.authService.isAuthenticated$;
   }
 }

@@ -1,17 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginScreenComponent } from './core/components/login-screen/login-screen.component';
+import { AuthGuard } from '@auth0/auth0-angular';
+import { AppComponent } from './app.component';
+import { HomeScreenComponent } from './core';
 
 const routes: Routes = [
   {
-    path: 'login',
-    component: LoginScreenComponent,
+    path: 'configuration',
+    loadChildren: () => import('./configuration/configuration.module').then(m => m.ConfigurationModule),
+    canActivate: [AuthGuard]
   },
   {
-    path: 'configuration',
-    loadChildren: () => import('./configuration/configuration.module').then(m => m.ConfigurationModule)
+    path: '',
+    component: HomeScreenComponent,
   },
-  { path: '**', redirectTo: 'configuration' }
 ];
 
 @NgModule({
