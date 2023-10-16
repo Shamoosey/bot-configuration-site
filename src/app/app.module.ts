@@ -5,13 +5,13 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { HttpClientModule } from '@angular/common/http';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core/core.module';
 import { MaterialModule } from 'src/app/shared/material.module';
-import { AuthModule } from '@auth0/auth0-angular';
-import { environment } from 'src/environments/environment';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
+import { environment as env } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -29,14 +29,23 @@ import { environment } from 'src/environments/environment';
     SharedModule,
     CoreModule,
     AuthModule.forRoot({
-      domain: environment.authDomain,
-      clientId: environment.authClientId,
-      authorizationParams: {
-        redirect_uri: window.location.origin
-      }
+      ...env.auth,
+      httpInterceptor: {
+        ...env.httpInterceptor,
+      },
     }),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthHttpInterceptor,
+      multi: true,
+    },
+    {
+      provide: Window,
+      useValue: window,
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
