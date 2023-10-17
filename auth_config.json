@@ -1,0 +1,10 @@
+{
+  "domain": "dev-4ra33i4g.us.auth0.com",
+  "clientId": "GeNLysNMkIoTjxZlcbCn40PgpIZxgZ9q",
+  "authorizationParams": {
+    "audience": "JoeConfigurationService-API"
+  },
+  "apiUri": "https://localhost:50501",
+  "appUri": "http://localhost:4200",
+  "errorPath": "/error"
+}

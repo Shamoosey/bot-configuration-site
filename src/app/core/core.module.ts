@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { CORE_COMPONENTS } from '.';
 import { SharedModule } from '../shared/shared.module';
 import { MaterialModule } from 'src/app/shared/material.module';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { MaterialModule } from 'src/app/shared/material.module';
     MaterialModule,
     NgSelectModule,
     RouterModule,
-    SharedModule
+    SharedModule,
+    CommonModule
   ],
   providers: [],
   exports: [
