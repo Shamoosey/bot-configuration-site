@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { User } from 'src/app/shared/models/user';
-import { UserService } from 'src/app/shared/services/user.service';
+import { User } from 'src/app/configuration/models/user';
+import { UserService } from 'src/app/configuration/services/user.service';
 
 @Component({
   selector: 'app-manage-user',

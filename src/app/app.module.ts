@@ -12,6 +12,9 @@ import { MaterialModule } from 'src/app/shared/material.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { environment as env } from '../environments/environment';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
@@ -34,6 +37,9 @@ import { environment as env } from '../environments/environment';
         ...env.httpInterceptor,
       },
     }),
+    EffectsModule.forRoot(),
+    StoreModule.forRoot({}),
+    StoreDevtoolsModule.instrument()
   ],
   providers: [
     {

@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ConfigurationComponent } from './configuration.component';
-import { ManageConfigurationComponent } from './manage-configuration/manage-configuration.component';
+import { ManageConfigurationComponent } from './components/manage-configuration/manage-configuration.component';
 import { AuthGuard } from '@auth0/auth0-angular';
+import { ViewConfigurationContainer } from './containers';
 
 const routes: Routes = [
   {
     path: '',
-    component: ConfigurationComponent,
+    component: ViewConfigurationContainer,
     canActivate: [AuthGuard]
   },
   {

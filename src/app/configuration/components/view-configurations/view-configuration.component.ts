@@ -1,16 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ConfigurationService } from '../shared/services/configuration.service';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
-import { Configuration } from '../shared/models/configuration';
+import { Configuration } from '../../models/configuration';
 
 @Component({
-  selector: 'app-configuration',
-  templateUrl: './configuration.component.html',
-  styleUrls: ['./configuration.component.scss']
+  selector: 'app-view-configuration',
+  templateUrl: './view-configuration.component.html',
+  styleUrls: ['./view-configuration.component.scss'],
 })
-export class ConfigurationComponent implements OnInit {
+export class ViewConfigurationComponent implements OnInit, OnChanges {
+  @Input() configurations: Configuration[] = []
   @ViewChild(MatSort) sort: MatSort;
 
   dataSource = new MatTableDataSource<Configuration>();
@@ -28,19 +28,18 @@ export class ConfigurationComponent implements OnInit {
   ] 
 
   constructor(
-    private configurationService: ConfigurationService,
     private router: Router
   ) { }
 
-  ngOnInit(): void {
-    this.refreshConfigurations();
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes)
+    if(changes["configurations"].currentValue){
+      this.dataSource.data = changes["configurations"].currentValue;
+      this.dataSource.sort = this.sort;
+    }
   }
 
-  refreshConfigurations() {
-    this.configurationService.getConfiguations().subscribe(configurations => {
-      this.dataSource.data = configurations;
-      this.dataSource.sort = this.sort;
-    })
+  ngOnInit(): void {
   }
 
   onEditConfig(config: Configuration) {

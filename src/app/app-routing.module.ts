@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 import { AppComponent } from './app.component';
-import { HomeScreenComponent } from './core';
+import { HomeScreenComponent } from './core/components';
 
 const routes: Routes = [
   {

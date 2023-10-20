@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, V
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { Trigger } from 'src/app/shared/models/trigger';
-import { TriggerService } from 'src/app/shared/services/trigger.service';
+import { Trigger } from 'src/app/configuration/models/trigger';
+import { TriggerService } from 'src/app/configuration/services/trigger.service';
 
 @Component({
   selector: 'app-manage-trigger',

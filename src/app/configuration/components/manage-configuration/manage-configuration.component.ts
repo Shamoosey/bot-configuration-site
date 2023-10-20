@@ -1,25 +1,26 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
-import { ConfigurationService } from '../../shared/services/configuration.service';
+import { ConfigurationService } from '../../services/configuration.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from '../../shared/components/dialog-component/dialog.component';
-import { DialogData } from '../../shared/models/dialog-data';
-import { DialogResult } from '../../shared/models/dialog-result';
-import { Trigger } from '../../shared/models/trigger';
-import { User } from '../../shared/models/user';
-import { Configuration } from 'src/app/shared/models/configuration';
+import { DialogComponent } from '../../../shared/components/dialog-component/dialog.component';
+import { DialogData } from '../../../shared/models/dialog-data';
+import { DialogResult } from '../../../shared/models/dialog-result';
+import { Trigger } from '../../models/trigger';
+import { User } from '../../models/user';
+import { Configuration } from 'src/app/configuration/models/configuration';
 import { Subject, Subscription, concat, takeUntil } from 'rxjs';
-import { TriggerService } from 'src/app/shared/services/trigger.service';
-import { UserService } from 'src/app/shared/services/user.service';
+import { TriggerService } from 'src/app/configuration/services/trigger.service';
+import { UserService } from 'src/app/configuration/services/user.service';
 
 @Component({
   selector: 'app-manage-configuration',
   templateUrl: './manage-configuration.component.html',
   styleUrls: ['./manage-configuration.component.scss']
 })
-export class ManageConfigurationComponent implements OnInit, OnDestroy {
+export class ManageConfigurationComponent implements OnInit, OnChanges, OnDestroy {
+  @Input() configuration: Configuration | null = null;
   @ViewChild("drawer") drawer: MatDrawer;
   @Output() closeButtonClicked = new EventEmitter<void>();
   
@@ -61,6 +62,14 @@ export class ManageConfigurationComponent implements OnInit, OnDestroy {
     private dialog: MatDialog
   ) { 
     
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes["configuration"].currentValue){
+      this.triggers = this.configuration.triggers ?? []
+      this.users = this.configuration.users ?? []
+      this.initializeForm();
+    }
   }
 
   ngOnInit(): void {
