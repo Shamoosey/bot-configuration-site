@@ -1,20 +1,18 @@
 <mat-drawer-container hasBackdrop="true" #drawer>
   <mat-drawer [mode]="'over'" position="end">
     <app-manage-trigger
-      *ngIf="drawerView == 'trigger'"
-      [configId]="configId"
+      *ngIf="drawerViewState == 'trigger'"
+      [configId]="configuration.id"
       [triggerId]="editedTriggerId"
       [editMode]="editMode"
       (onClose)="onDrawerClose()"
-      (onUpdate)="onTriggerUpdate()"
     ></app-manage-trigger>
     <app-manage-user
-      *ngIf="drawerView == 'user'"
-      [configId]="configId"
+      *ngIf="drawerViewState == 'user'"
+      [configId]="configuration.id"
       [userId]="editedUserId"
       [editMode]="editMode"
       (onClose)="onDrawerClose()"
-      (onUpdate)="onUserUpdate()"
     ></app-manage-user>
   </mat-drawer>
   <mat-drawer-content>
@@ -107,7 +105,7 @@
                 *ngIf="manageMode"
                 mat-stroked-button
                 [disabled]="!editMode"
-                (click)="onDeleteConfig()"
+                (click)="onDeleteConfigClick()"
                 color="primary">
                 Delete
               </button>
@@ -120,7 +118,7 @@
             <h2>Triggers</h2>
             <button
               mat-flat-button
-              (click)="onCreateTrigger()"
+              (click)="onCreateTriggerClick()"
               [disabled]="!editMode"
               color="primary"
             >Add Trigger</button>
@@ -128,8 +126,8 @@
           <app-trigger-table
             [triggers]="triggers"
             [editMode]="editMode"
-            (onTriggerEdit)="onTriggerEdit($event)"
-            (onTriggerDelete)="onTriggerDelete($event)"
+            (onTriggerEdit)="onTriggerEditClick($event)"
+            (onTriggerDelete)="onTriggerDeleteClick($event)"
           ></app-trigger-table>
         </div>
         <div class="user-table-wrapper grid-item">
@@ -137,7 +135,7 @@
             <h2>Users</h2>
             <button
               mat-flat-button
-              (click)="onCreateUser()"
+              (click)="onCreateUserClick()"
               [disabled]="!editMode"
               color="primary"
             >Add User</button>
@@ -145,8 +143,8 @@
           <app-user-table
             [users]="users"
             [editMode]="editMode"
-            (onUserEdit)="onUserEdit($event)"
-            (onUserDelete)="onUserDelete($event)"
+            (onUserEdit)="onUserEditClick($event)"
+            (onUserDelete)="onUserDeleteClick($event)"
         ></app-user-table>
         </div>
       </div>

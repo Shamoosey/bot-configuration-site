@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ManageConfigurationComponent } from './components/manage-configuration/manage-configuration.component';
 import { AuthGuard } from '@auth0/auth0-angular';
-import { ViewConfigurationContainer } from './containers';
+import { ManageConfigurationContainer, ViewConfigurationContainer } from './containers';
 
 const routes: Routes = [
   {
@@ -12,7 +12,7 @@ const routes: Routes = [
   },
   {
     path: 'manage-configuration',
-    component: ManageConfigurationComponent,
+    component: ManageConfigurationContainer,
     canActivate: [AuthGuard]
   },
   { path: '**', redirectTo: '' }

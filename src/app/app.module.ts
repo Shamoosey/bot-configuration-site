@@ -15,6 +15,7 @@ import { environment as env } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { StoreRouterConnectingModule, routerReducer } from '@ngrx/router-store';
 
 @NgModule({
   declarations: [
@@ -37,9 +38,12 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
         ...env.httpInterceptor,
       },
     }),
-    EffectsModule.forRoot(),
-    StoreModule.forRoot({}),
-    StoreDevtoolsModule.instrument()
+    EffectsModule.forRoot([]),
+    StoreModule.forRoot({
+      router: routerReducer,
+    }),
+    StoreDevtoolsModule.instrument(),
+    StoreRouterConnectingModule.forRoot(),
   ],
   providers: [
     {

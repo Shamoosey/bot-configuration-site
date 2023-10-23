@@ -1,3 +1,7 @@
 <app-manage-configuration
   [configuration]="(configuration$ | async)"
+  [triggers]="(triggers$ | async)"
+  [users]="(users$ | async)"
+  [drawerViewState]="(drawerViewState$ | async)"
+  (drawerViewChange)="onDrawerViewChange($event)"
 ></app-manage-configuration>

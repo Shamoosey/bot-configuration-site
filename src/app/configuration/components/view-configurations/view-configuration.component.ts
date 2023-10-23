@@ -43,6 +43,6 @@ export class ViewConfigurationComponent implements OnInit, OnChanges {
   }
 
   onEditConfig(config: Configuration) {
-    this.router.navigate(['configuration/manage-configuration'], {queryParams: {id: config.id}})
+    this.router.navigate(['configuration/manage-configuration'], {queryParams: {configuration_id: config.id}})
   }
 }

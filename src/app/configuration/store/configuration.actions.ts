@@ -1,5 +1,6 @@
 import { createAction, props } from "@ngrx/store";
 import { Configuration } from "../models";
+import { DrawerView } from "../models/drawer-view";
 
 export const LoadConfigurations = createAction(
   '[Configurations] Load Configurations'
@@ -15,13 +16,21 @@ export const LoadConfigurationsFail = createAction(
 );
 
 export const LoadManagedConfiguration = createAction(
-  '[Configurations] Load Managed Configuration'
+  '[Configurations] Load Managed Configuration',
+  props<{configurationId: string}>()
 );
 
 export const LoadManagedConfigurationSuccess = createAction(
-  '[Configurations] Load Managed Configuration Success'
+  '[Configurations] Load Managed Configuration Success',
+  props<{configuration: Configuration}>()
 );
 
 export const LoadManagedConfigurationFail = createAction(
-  '[Configurations] Load Managed Configuration Fail'
+  '[Configurations] Load Managed Configuration Fail',
+  props<{error: string}>()
+);
+
+export const DrawerViewChange = createAction(
+  '[Configurations] DrawViewChange',
+  props<{drawerView: DrawerView}>()
 );
