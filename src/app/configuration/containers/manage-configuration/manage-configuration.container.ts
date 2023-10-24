@@ -28,7 +28,43 @@ export class ManageConfigurationContainer implements OnInit {
     this.drawerViewState$ = this.store.select(ConfigurationSelectors.getDrawerViewState)
   }
 
-  onDrawerViewChange(drawerView: DrawerView) {
-    this.store.dispatch(ConfigurationActions.DrawerViewChange({ drawerView }))
+  onDrawerViewChange(drawer: { view: DrawerView, id?: string }) {
+    this.store.dispatch(ConfigurationActions.DrawerViewChange({ drawer }))
+  }
+
+  onConfigurationEdit(configuration: Configuration){
+    this.store.dispatch(ConfigurationActions.ConfigurationEdit({ configuration }))
+  }
+
+  onConfigurationCreate(configuration: Configuration){
+    this.store.dispatch(ConfigurationActions.ConfigurationCreate({ configuration }))
+  }
+
+  onConfigurationDelete(configId: string){
+    this.store.dispatch(ConfigurationActions.ConfigurationDelete({ configurationId: configId }))
+  }
+
+  onTriggerCreate(trigger: Trigger){
+    this.store.dispatch(ConfigurationActions.TriggerCreate({ trigger }))
+  }
+
+  onTriggerEdit(trigger: Trigger){
+    this.store.dispatch(ConfigurationActions.TriggerEdit({ trigger }))
+  }
+  
+  onTriggerDelete(triggerId:string) {
+    this.store.dispatch(ConfigurationActions.TriggerDelete({ triggerId }))
+  }
+  
+  onUserCreate(user: User){
+    this.store.dispatch(ConfigurationActions.UserCreate({ user }))
+  }
+
+  onUserEdit(user: User){
+    this.store.dispatch(ConfigurationActions.UserEdit({ user }))
+  }
+
+  onUserDelete(userId:string) {
+    this.store.dispatch(ConfigurationActions.UserDelete({ userId }))
   }
 }

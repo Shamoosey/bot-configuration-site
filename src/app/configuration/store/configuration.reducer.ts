@@ -1,8 +1,7 @@
-import { Action, createFeatureSelector, createReducer, on } from "@ngrx/store";
+import { Action, createReducer, on } from "@ngrx/store";
 import { Configuration, Trigger, User } from "../models";
 import * as ConfigurationActions from "./configuration.actions"
 import * as fromRouter from '@ngrx/router-store';
-import { RouterEvent } from "@angular/router";
 import { DrawerView } from "../models/drawer-view";
 
 export const configurationFeatureKey = "configuration"
@@ -13,6 +12,8 @@ export interface ConfigurationState {
   managedConfiguration: Configuration | null,
   managedUsers: User[];
   managedTriggers: Trigger[];
+  selectedUserId: string | null;
+  selectedTriggerId: string | null;
   drawerViewState: DrawerView
 }
 
@@ -22,6 +23,8 @@ const initialState: ConfigurationState = {
   managedConfiguration: null,
   managedTriggers: [],
   managedUsers: [],
+  selectedTriggerId: null,
+  selectedUserId: null,
   drawerViewState: "none"
 };
 
@@ -56,12 +59,23 @@ export const configurationReducer = createReducer(
       ...state
     }
   }),
-  on(ConfigurationActions.DrawerViewChange, (state, { drawerView}) => {
+  on(ConfigurationActions.DrawerViewChange, (state, { drawer }) => {
+    let selectedTriggerId = null;
+    let selectedUserId = null;
+
+    if(drawer.view == "user"){
+      selectedUserId= drawer.id;
+    } else if (drawer.view == "trigger") {
+      selectedTriggerId = drawer.id;
+    }
+
     return {
       ...state,
-      drawerViewState: drawerView
+      drawerViewState: drawer.view,
+      selectedTriggerId,
+      selectedUserId
     }
-  })
+  }),
 )
 
 export function reducer(state: ConfigurationState | undefined, action: Action) {

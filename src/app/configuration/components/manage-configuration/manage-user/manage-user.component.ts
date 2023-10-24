@@ -9,29 +9,23 @@ import { UserService } from 'src/app/configuration/services/user.service';
   templateUrl: './manage-user.component.html',
   styleUrls: ['./manage-user.component.scss']
 })
-export class ManageUserComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() configId: string;
-  @Input() userId: string | null;
+export class ManageUserComponent implements OnInit, OnChanges {
+  @Input() user: User | null;
   @Input() editMode: boolean;
+
   @Output() onClose = new EventEmitter();
-  @Output() onUpdate = new EventEmitter();
+  @Output() onUserEdit = new EventEmitter<User>();
+  @Output() onUserCreate = new EventEmitter<User>();
 
   userForm: FormGroup;
 
-  user: User | null = null;
-
-  private ngUnsubscribe = new Subject<void>();
-
-
   get manageMode() {
-    return this.userId != null;
+    return this.user != null;
   }
 
   constructor(
     private fb: FormBuilder,
-    private userSerivce: UserService
   ) { 
-    
   }
 
   ngOnInit() {
@@ -39,20 +33,11 @@ export class ManageUserComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if("userId" in changes && this.userId != null){
-      this.userSerivce.getUser(this.userId)
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe((user) => {
-          this.user = user;
-          this.initializeForm();
-      });
+    if("users" in changes){
+      this.initializeForm();
     }
   }
 
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
 
   initializeForm() {
     this.userForm = this.fb.group({
@@ -71,25 +56,18 @@ export class ManageUserComponent implements OnInit, OnChanges, OnDestroy {
         userName: this.userForm.controls["username"].value
       } 
 
-      let userResponseSub: Observable<any>;
       if(this.manageMode){
-        userResponseSub = this.userSerivce.updateUser(this.userId, submittedUser)
+        this.onUserEdit.emit(submittedUser)
       } else {
-        userResponseSub = this.userSerivce.createUser(submittedUser, this.configId)
+        this.onUserCreate.emit(submittedUser)
       }
 
-      userResponseSub
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe(x => {
-          this.resetForm();
-          this.onUpdate.emit();
-          this.onClose.emit();
-      })
+      this.onClose.emit()
     }
   }
 
   resetForm(){
-    this.userId = null;
+    this.user = null;
     this.userForm.reset();
   }
 

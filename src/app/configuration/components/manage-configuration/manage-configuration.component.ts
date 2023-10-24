@@ -24,23 +24,25 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
   @Input() users: User[] = [];
   @Input() triggers: Trigger[] = [];
   @Input() drawerViewState: DrawerView;
+  @Input() editedTrigger: Trigger | null;
+  @Input() editedUser: User | null;
   
   @Output() closeButtonClicked = new EventEmitter<void>();
+
+  @Output() createConfiguration = new EventEmitter<Configuration>();
   @Output() editConfiguration = new EventEmitter<Configuration>();
-  @Output() editTrigger = new EventEmitter<Trigger>();
+  @Output() deleteConfiguration = new EventEmitter<string>();
   @Output() editUser = new EventEmitter<User>();
-  @Output() deleteTrigger = new EventEmitter<string>();
+  @Output() createUser = new EventEmitter<User>();
   @Output() deleteUser = new EventEmitter<string>();
-  @Output() deleteConfigurationClicked = new EventEmitter<void>();
-  @Output() submitButtonClicked = new EventEmitter<void>();
-  @Output() drawerViewChange = new EventEmitter<DrawerView>();
-  @Output() configurationPropertyChange = new EventEmitter<Configuration>();
+  @Output() editTrigger = new EventEmitter<Trigger>();
+  @Output() createTrigger = new EventEmitter<Trigger>();
+  @Output() deleteTrigger = new EventEmitter<string>();
+  @Output() drawerViewChange = new EventEmitter<{ view: DrawerView, id?: string }>();
   
   @ViewChild("drawer") drawer: MatDrawer;
 
   editedConfig: Configuration | null = null;
-  editedTriggerId: string | null = null;
-  editedUserId: string | null = null;
 
   configForm: FormGroup;
 
@@ -53,6 +55,8 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
   
   editMode = false;
 
+  // Edit = true
+  // Create = false
   get manageMode() {
     return this.configuration != null;
   }
@@ -69,8 +73,6 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
     } else if (this.configuration == null){
       this.editMode = false;
       this.editedConfig = null;
-      this.editedTriggerId = null;
-      this.editedUserId = null;
     }
     
 
@@ -128,7 +130,7 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
 
     const result = await firstValueFrom(dialogRef.afterClosed()) as DialogResult
     if(result?.primaryButtonClicked){
-      this.deleteConfigurationClicked.emit()
+      this.deleteConfiguration.emit(this.configuration.id)
     }
   }
 
@@ -151,46 +153,54 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
   }
 
   onSubmit(){
-    this.submitButtonClicked.emit()
-  }
-
-  onConfigPropertyChange(){
-    if(this.configForm.status != "INVALID" && this.editMode) {
-      const kickCacheEnabled = this.configForm.controls["enableKickCache"].value;
-      let config: Configuration = {
-        serverId: this.configForm.controls["serverId"].value,
-        defaultChannel: this.configForm.controls["defaultChannel"].value,
-        enableKickCache: kickCacheEnabled,
-        kickCacheDays: kickCacheEnabled ? this.configForm.controls["kickCacheDays"].value : 0,
-        kickCacheHours: kickCacheEnabled ? this.configForm.controls["kickCacheHours"].value : 0,
-        kickCacheServerMessage: kickCacheEnabled ? this.configForm.controls["kickCacheServerMessage"].value : "",
-        kickCacheUserMessage: kickCacheEnabled ? this.configForm.controls["kickCacheUserMessage"].value : "",
-        name: "server name", // this value will be pulled from serverId when using discord auth,
-        triggers: [],
-        users: [] // add back t he data later
-      }
-
-      this.configurationPropertyChange.emit(config)
+    const configData = this.getConfigurationFormData();
+    if(this.manageMode){
+      this.editConfiguration.emit(configData)
+    } else {
+      this.createConfiguration.emit(configData)
     }
   }
 
+  getConfigurationFormData(){
+    const kickCacheEnabled = this.configForm.controls["enableKickCache"].value;
+    let config: Configuration = {
+      serverId: this.configForm.controls["serverId"].value,
+      defaultChannel: this.configForm.controls["defaultChannel"].value,
+      enableKickCache: kickCacheEnabled,
+      kickCacheDays: kickCacheEnabled ? this.configForm.controls["kickCacheDays"].value : 0,
+      kickCacheHours: kickCacheEnabled ? this.configForm.controls["kickCacheHours"].value : 0,
+      kickCacheServerMessage: kickCacheEnabled ? this.configForm.controls["kickCacheServerMessage"].value : "",
+      kickCacheUserMessage: kickCacheEnabled ? this.configForm.controls["kickCacheUserMessage"].value : "",
+      name: "server name", // this value will be pulled from serverId when using discord auth,
+      triggers: [],
+      users: [] // add back t he data later
+    }
+
+    return config;
+  }
+
   onCreateTriggerClick(){
-    this.editedTriggerId = null;
-    this.drawerViewChange.emit("trigger")
+    this.drawerViewChange.emit({ view: "trigger", id: null })
   }
 
   onCreateUserClick(){
-    this.editedUserId = null;
-    this.drawerViewChange.emit("user")
+    this.drawerViewChange.emit({ view: "user", id: null})
   }
 
   onDrawerClose() {
-    this.drawerViewChange.emit("none");
+    this.drawerViewChange.emit({ view: "none" });
+  }
+
+  onTriggerCreate(trigger: Trigger){
+    this.createTrigger.emit(trigger)
+  }
+
+  onTriggerEdit(trigger: Trigger){
+    this.editTrigger.emit(trigger)
   }
   
   onTriggerEditClick(trigger: Trigger){
-    this.editedTriggerId = trigger.id;
-    this.drawerViewChange.emit("trigger");
+    this.drawerViewChange.emit({ view: "trigger", id: trigger.id });
   }
 
   onTriggerDeleteClick(triggerId:string) {
@@ -198,8 +208,15 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
   }
 
   onUserEditClick(user: User){
-    this.editedUserId = user.id;
-    this.drawerViewChange.emit("user")
+    this.drawerViewChange.emit({ view: "user", id: user.id });
+  }
+
+  onUserCreate(user: User){
+    this.createUser.emit(user)
+  }
+
+  onUserEdit(user: User) {
+    this.editUser.emit(user)
   }
 
   onUserDeleteClick(userId:string) {

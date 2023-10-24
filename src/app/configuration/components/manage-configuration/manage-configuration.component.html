@@ -2,17 +2,19 @@
   <mat-drawer [mode]="'over'" position="end">
     <app-manage-trigger
       *ngIf="drawerViewState == 'trigger'"
-      [configId]="configuration.id"
-      [triggerId]="editedTriggerId"
       [editMode]="editMode"
+      [trigger]="editedTrigger"
       (onClose)="onDrawerClose()"
+      (onTriggerCreate)="onTriggerCreate($event)"
+      (onTriggerEdit)="onTriggerEdit($event)"
     ></app-manage-trigger>
     <app-manage-user
       *ngIf="drawerViewState == 'user'"
-      [configId]="configuration.id"
-      [userId]="editedUserId"
+      [user]="editedUser"
       [editMode]="editMode"
       (onClose)="onDrawerClose()"
+      (onUserCreate)="onUserCreate($event)"
+      (onUserEdit)="onUserEdit($event)"
     ></app-manage-user>
   </mat-drawer>
   <mat-drawer-content>

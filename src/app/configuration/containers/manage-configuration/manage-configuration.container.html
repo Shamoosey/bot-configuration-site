@@ -4,4 +4,13 @@
   [users]="(users$ | async)"
   [drawerViewState]="(drawerViewState$ | async)"
   (drawerViewChange)="onDrawerViewChange($event)"
+  (createConfiguration)="onConfigurationCreate($event)"
+  (editConfiguration)="onConfigurationEdit($event)"
+  (deleteConfiguration)="onConfigurationDelete($event)"
+  (editUser)="onUserEdit($event)"
+  (deleteUser)="onUserDelete($event)"
+  (createUser)="onUserCreate($event)"
+  (editTrigger)="onTriggerEdit($event)"
+  (deleteTrigger)="onTriggerDelete($event)"
+  (createTrigger)="onTriggerCreate($event)"
 ></app-manage-configuration>

@@ -1,65 +1,43 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { Observable, Subject, takeUntil } from 'rxjs';
 import { Trigger } from 'src/app/configuration/models/trigger';
-import { TriggerService } from 'src/app/configuration/services/trigger.service';
 
 @Component({
   selector: 'app-manage-trigger',
   templateUrl: './manage-trigger.component.html',
   styleUrls: ['./manage-trigger.component.scss']
 })
-export class ManageTriggerComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() configId: string;
-  @Input() triggerId: string | null;
+export class ManageTriggerComponent implements OnInit, OnChanges {
+  @Input() trigger: Trigger | null;
   @Input() editMode: boolean;
+
   @Output() onClose = new EventEmitter();
-  @Output() onUpdate = new EventEmitter();
+  @Output() onTriggerEdit = new EventEmitter<Trigger>();
+  @Output() onTriggerCreate = new EventEmitter<Trigger>();
 
   triggerForm: FormGroup;
 
-  trigger: Trigger | null = null;
   triggerResponses: string[] = [];
   triggerWords: string[] = [];
   reactEmotes: string[] = [];
 
-  private ngUnsubscribe = new Subject<void>();
-
-
   get manageMode() {
-    return this.triggerId != null;
+    return this.trigger != null;
   }
 
   constructor(
     private fb: FormBuilder,
-    private triggerSerivce: TriggerService
   ) { 
-    
   }
 
   ngOnInit() {
     this.initializeForm();
   }
 
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
-
   ngOnChanges(changes) {
-    if("triggerId" in changes){
-      if(this.triggerId != null){
-        this.triggerSerivce.getTrigger(this.triggerId)
-          .pipe(takeUntil(this.ngUnsubscribe))
-          .subscribe(t => {
-            this.trigger = t;
-            this.triggerWords = t.triggerWords ?? []
-            this.reactEmotes = t.reactEmotes ?? []
-            this.triggerResponses = t.triggerResponses ?? []
-            this.initializeForm();
-        })
-      }
+    if("triggerId" in changes && this.trigger != null){
+      this.initializeForm()
     }
   }
 
@@ -85,26 +63,18 @@ export class ManageTriggerComponent implements OnInit, OnChanges, OnDestroy {
         triggerResponses: this.triggerResponses,
       } 
 
-      let triggerResponseSub: Observable<any>;
       if(this.manageMode){
-        triggerResponseSub = this.triggerSerivce.updateTrigger(this.triggerId, submittedTrigger)
+        this.onTriggerEdit.emit(submittedTrigger)
       } else {
-        triggerResponseSub = this.triggerSerivce.createTrigger(submittedTrigger, this.configId)
+        this.onTriggerCreate.emit(submittedTrigger)
       }
 
-      triggerResponseSub
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe(x => {
-          this.resetForm();
-          this.onUpdate.emit();
-          this.onClose.emit();
-      })
+      this.onClose.emit()
     }
   }
 
   resetForm(){
     this.trigger = null;
-    this.triggerId = null;
     this.triggerResponses = [];
     this.triggerWords = [];
     this.reactEmotes = [];

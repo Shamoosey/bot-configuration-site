@@ -1,0 +1,1 @@
+export type UpdateType = "edit" | "create" | "delete"
