@@ -2,16 +2,18 @@
   <mat-drawer [mode]="'over'" position="end">
     <app-manage-trigger
       *ngIf="drawerViewState == 'trigger'"
-      [editMode]="editMode"
-      [trigger]="editedTrigger"
+      [editMode]="viewMode == 'edit'"
+      [manageMode]="triggerManageMode"
+      [trigger]="selectedTrigger"
       (onClose)="onDrawerClose()"
       (onTriggerCreate)="onTriggerCreate($event)"
       (onTriggerEdit)="onTriggerEdit($event)"
     ></app-manage-trigger>
     <app-manage-user
       *ngIf="drawerViewState == 'user'"
-      [user]="editedUser"
-      [editMode]="editMode"
+      [user]="selectedUser"
+      [manageMode]="userManageMode"
+      [editMode]="viewMode == 'edit'"
       (onClose)="onDrawerClose()"
       (onUserCreate)="onUserCreate($event)"
       (onUserEdit)="onUserEdit($event)"
@@ -22,10 +24,14 @@
       <div class="content-wrapper">
         <div class="form-wrapper grid-item">
           <div class="header-wrapper centered">
-            <h2>{{manageMode ? "Manage" : "Create"}} Configuration</h2>
+            <h2>{{manageMode == 'edit' ? "Manage" : "Create"}} Configuration</h2>
           </div>
           <div class="edit-mode-toggle">
-            <mat-slide-toggle color="primary" (change)="editMode = $event.checked">
+            <mat-slide-toggle 
+              color="primary" 
+              (change)="onToggleViewModeClick($event.checked)" 
+              [checked]="viewMode != 'view'"
+              *ngIf="manageMode != 'create'">
               Edit Mode
             </mat-slide-toggle>
           </div>
@@ -35,8 +41,7 @@
               <input 
                 matInput 
                 placeholder="Server ID" 
-                formControlName="serverId" 
-                [readonly]="!editMode">
+                formControlName="serverId">
             </mat-form-field>
 
             <mat-form-field class="form-field" appearance="outline">
@@ -45,18 +50,17 @@
                 matInput 
                 placeholder="Default Channel" 
                 formControlName="defaultChannel" 
-                [readonly]="!editMode">
+                [readonly]="viewMode == 'view'">
             </mat-form-field>
-          
-            <mat-checkbox 
-              class="checkbox form-field" 
-              formControlName="enableKickCache" 
+
+            <mat-slide-toggle 
               color="primary" 
-              (change)="onKickCacheClick()"
-              [disabled]="!editMode">
+              (change)="onKickCacheClick($event.checked)" 
+              [disabled]="viewMode == 'view'" 
+              formControlName="enableKickCache">
               Enable Kick Cache
-            </mat-checkbox>
-          
+            </mat-slide-toggle>
+        
             <mat-form-field class="form-field" appearance="outline">
               <mat-label>Kick Cacche Days</mat-label>
               <input 
@@ -64,7 +68,7 @@
                 placeholder="Kick Cache Days" 
                 formControlName="kickCacheDays" 
                 type="number"
-                [readonly]="!editMode">
+                [readonly]="viewMode == 'view'">
             </mat-form-field>
           
             <mat-form-field class="form-field" appearance="outline">
@@ -74,7 +78,7 @@
                 placeholder="Kick Cache Hours" 
                 formControlName="kickCacheHours" 
                 type="number"
-                [readonly]="!editMode">
+                [readonly]="viewMode == 'view'">
             </mat-form-field>
           
             <mat-form-field class="form-field" appearance="outline">
@@ -83,7 +87,7 @@
                 matInput 
                 placeholder="Kick Cache Server Message" 
                 formControlName="kickCacheServerMessage" 
-                [readonly]="!editMode">
+                [readonly]="viewMode == 'view'">
             </mat-form-field>
           
             <mat-form-field class="form-field" appearance="outline">
@@ -92,21 +96,21 @@
                 matInput 
                 placeholder="Kick Cache User Message" 
                 formControlName="kickCacheUserMessage" 
-                [readonly]="!editMode">
+                [readonly]="viewMode == 'view'">
             </mat-form-field>
 
             <div class="action-container">
               <button
                 mat-flat-button
                 (click)="onSubmit()"
-                [disabled]="!editMode"
+                [disabled]="viewMode == 'view'"
                 color="primary">
-                {{manageMode ? "Update" : "Submit"}}
+                {{manageMode == 'edit' ? "Update" : "Submit"}}
               </button>
               <button
-                *ngIf="manageMode"
+                *ngIf="manageMode == 'edit'"
                 mat-stroked-button
-                [disabled]="!editMode"
+                [disabled]="viewMode == 'view'"
                 (click)="onDeleteConfigClick()"
                 color="primary">
                 Delete
@@ -121,13 +125,13 @@
             <button
               mat-flat-button
               (click)="onCreateTriggerClick()"
-              [disabled]="!editMode"
+              [disabled]="viewMode == 'view'"
               color="primary"
             >Add Trigger</button>
           </div>
           <app-trigger-table
             [triggers]="triggers"
-            [editMode]="editMode"
+            [editMode]="viewMode == 'edit'"
             (onTriggerEdit)="onTriggerEditClick($event)"
             (onTriggerDelete)="onTriggerDeleteClick($event)"
           ></app-trigger-table>
@@ -138,13 +142,13 @@
             <button
               mat-flat-button
               (click)="onCreateUserClick()"
-              [disabled]="!editMode"
+              [disabled]="viewMode == 'view'"
               color="primary"
             >Add User</button>
           </div>
           <app-user-table
             [users]="users"
-            [editMode]="editMode"
+            [editMode]="viewMode == 'edit'"
             (onUserEdit)="onUserEditClick($event)"
             (onUserDelete)="onUserDeleteClick($event)"
         ></app-user-table>

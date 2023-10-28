@@ -23,9 +23,15 @@ export const getConfiguations = createSelector(configurationFeature, (state) => 
   return state.configurations
 })
 
+export const getConfigurationManageMode = createSelector(configurationFeature, state => state, state => state.configurationManageMode)
+export const getTriggerManageMode = createSelector(configurationFeature, state => state, state => state.triggerManageMode)
+export const getUserManageMode = createSelector(configurationFeature, state => state, state => state.userManageMode)
+export const getConfigurationViewMode = createSelector(configurationFeature, state => state, state => state.configurationViewMode)
 export const getManagedConfiguration = createSelector(configurationFeature, (state) => state, state => state.managedConfiguration)
 export const getManagedTriggers = createSelector(configurationFeature, (state) => state, state => state.managedTriggers)
+export const getSelectedTrigger = createSelector(configurationFeature, (state) => state, state => state.selectedTrigger)
 export const getManagedUsers = createSelector(configurationFeature, (state) => state, state => state.managedUsers)
+export const getSelectedUser = createSelector(configurationFeature, (state) => state, state => state.selectedUser)
 export const getManagedConfigurationId = createSelector(configurationFeature, (state) => state, state => state.managedConfigurationId)
 export const getDrawerViewState = createSelector(configurationFeature, (state) => state, state => state.drawerViewState)
 

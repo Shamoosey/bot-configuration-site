@@ -23,6 +23,6 @@ export class ViewConfigurationContainer implements OnInit {
 
   ngOnInit(): void {
     this.configurations$ = this.store.select(ConfigurationSelectors.getConfiguations)
-    this.store.dispatch(ConfigurationActions.LoadConfigurations())
+    this.store.dispatch(ConfigurationActions.LoadConfigurations({useCache: true}))
   }
 }

@@ -12,6 +12,9 @@ import { User } from '../../models/user';
 import { Configuration } from 'src/app/configuration/models/configuration';
 import { DrawerView } from '../../models/drawer-view';
 import { firstValueFrom } from 'rxjs';
+import { ManageMode } from '../../models/manageMode';
+import { ConfigurationViewMode } from '../../models/configurationViewMode';
+import { ConfigurationUpdate } from '../../models/configurationUpdate';
 
 @Component({
   selector: 'app-manage-configuration',
@@ -24,11 +27,16 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
   @Input() users: User[] = [];
   @Input() triggers: Trigger[] = [];
   @Input() drawerViewState: DrawerView;
-  @Input() editedTrigger: Trigger | null;
-  @Input() editedUser: User | null;
+  @Input() selectedTrigger: Trigger | null;
+  @Input() selectedUser: User | null;
+  @Input() manageMode: ManageMode;
+  @Input() triggerManageMode: ManageMode;
+  @Input() userManageMode: ManageMode;
+  @Input() viewMode: ConfigurationViewMode;
   
   @Output() closeButtonClicked = new EventEmitter<void>();
-
+  @Output() onChangeManageMode = new EventEmitter<ManageMode>();
+  @Output() toggleViewMode = new EventEmitter<ConfigurationViewMode>();
   @Output() createConfiguration = new EventEmitter<Configuration>();
   @Output() editConfiguration = new EventEmitter<Configuration>();
   @Output() deleteConfiguration = new EventEmitter<string>();
@@ -39,6 +47,7 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
   @Output() createTrigger = new EventEmitter<Trigger>();
   @Output() deleteTrigger = new EventEmitter<string>();
   @Output() drawerViewChange = new EventEmitter<{ view: DrawerView, id?: string }>();
+  @Output() configurationValueChange = new EventEmitter<ConfigurationUpdate>();
   
   @ViewChild("drawer") drawer: MatDrawer;
 
@@ -52,14 +61,6 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
     "kickCacheServerMessage",
     "kickCacheUserMessage",
   ]
-  
-  editMode = false;
-
-  // Edit = true
-  // Create = false
-  get manageMode() {
-    return this.configuration != null;
-  }
 
   constructor(
     private fb: FormBuilder,
@@ -67,16 +68,14 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.configuration){
-      this.editedConfig = { ...this.configuration }
-      this.editMode = true;
-    } else if (this.configuration == null){
-      this.editMode = false;
+    if(this.manageMode == "edit"){
+      this.editedConfig = { ...this.configuration };
+      
+    } else{
       this.editedConfig = null;
     }
-    
-
     this.initializeForm();
+    this.configForm.valueChanges()
     this.handleDrawerStateChange();
   }
 
@@ -101,15 +100,15 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
 
   initializeForm(){
     this.configForm = this.fb.group({
-      "serverId": new FormControl(this.editedConfig?.serverId, [ Validators.required ]),
+      "serverId": new FormControl({value: this.editedConfig?.serverId, disabled: this.viewMode == "view"}, [ Validators.required ]),
       "defaultChannel": new FormControl(this.editedConfig?.defaultChannel, [ Validators.required ]),
-      "enableKickCache": new FormControl(this.editedConfig?.enableKickCache),
+      "enableKickCache": new FormControl(this.editedConfig?.enableKickCache ?? false),
       "kickCacheDays": new FormControl(this.editedConfig?.kickCacheDays),
       "kickCacheHours": new FormControl(this.editedConfig?.kickCacheHours),
       "kickCacheServerMessage": new FormControl(this.editedConfig?.kickCacheServerMessage),
       "kickCacheUserMessage": new FormControl(this.editedConfig?.kickCacheUserMessage),
     })
-    this.onKickCacheClick();
+    this.onKickCacheClick(this.configForm.controls["enableKickCache"].value);
   }
 
   onSave(closeOnSuccess = false) {
@@ -134,17 +133,20 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
     }
   }
 
-  onKickCacheClick() {
-    for(var cntrlName of this.kickCacheControls){
-      if(this.configForm.controls["enableKickCache"].value){
-        this.configForm.controls[cntrlName].enable();
-        this.configForm.controls[cntrlName].addValidators([Validators.required]);
-      } else {
-        this.configForm.controls[cntrlName].disable();
-        this.configForm.controls[cntrlName].removeValidators([Validators.required]);
-        this.configForm.controls[cntrlName].markAsUntouched();
+  onKickCacheClick(mode: boolean) {
+    const cntrl = this.configForm.controls["enableKickCache"];
+    if(this.viewMode == 'edit'){
+      for(var cntrlName of this.kickCacheControls){
+        if(mode){
+          this.configForm.controls[cntrlName].enable();
+          this.configForm.controls[cntrlName].addValidators([Validators.required]);
+        } else {
+          this.configForm.controls[cntrlName].disable();
+          this.configForm.controls[cntrlName].removeValidators([Validators.required]);
+          this.configForm.controls[cntrlName].markAsUntouched();
+        }
+        this.configForm.controls[cntrlName].updateValueAndValidity()
       }
-      this.configForm.controls[cntrlName].updateValueAndValidity()
     }
   }
 
@@ -154,7 +156,7 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
 
   onSubmit(){
     const configData = this.getConfigurationFormData();
-    if(this.manageMode){
+    if(this.manageMode == 'edit'){
       this.editConfiguration.emit(configData)
     } else {
       this.createConfiguration.emit(configData)
@@ -162,21 +164,26 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
   }
 
   getConfigurationFormData(){
-    const kickCacheEnabled = this.configForm.controls["enableKickCache"].value;
     let config: Configuration = {
+      id: this.managedConfigurationId,
       serverId: this.configForm.controls["serverId"].value,
       defaultChannel: this.configForm.controls["defaultChannel"].value,
-      enableKickCache: kickCacheEnabled,
-      kickCacheDays: kickCacheEnabled ? this.configForm.controls["kickCacheDays"].value : 0,
-      kickCacheHours: kickCacheEnabled ? this.configForm.controls["kickCacheHours"].value : 0,
-      kickCacheServerMessage: kickCacheEnabled ? this.configForm.controls["kickCacheServerMessage"].value : "",
-      kickCacheUserMessage: kickCacheEnabled ? this.configForm.controls["kickCacheUserMessage"].value : "",
+      enableKickCache: this.configForm.controls["enableKickCache"].value,
+      kickCacheDays: this.configForm.controls["kickCacheDays"].value ?? 0,
+      kickCacheHours: this.configForm.controls["kickCacheHours"].value ?? 0,
+      kickCacheServerMessage: this.configForm.controls["kickCacheServerMessage"].value ?? "",
+      kickCacheUserMessage: this.configForm.controls["kickCacheUserMessage"].value ?? "",
       name: "server name", // this value will be pulled from serverId when using discord auth,
-      triggers: [],
-      users: [] // add back t he data later
+      triggers: undefined,
+      users: undefined // add back t he data later
     }
 
     return config;
+  }
+
+  onToggleViewModeClick(mode: boolean){
+    const manageMode = !mode ? "view" : "edit" 
+    this.toggleViewMode.emit(manageMode)
   }
 
   onCreateTriggerClick(){

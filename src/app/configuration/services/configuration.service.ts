@@ -19,7 +19,7 @@ export class ConfigurationService {
   }
 
   createConfiguration(config:Configuration) {
-    return this.http.post(`${environment.configurationServiceUrl}/Configuration`, config);
+    return this.http.post<boolean>(`${environment.configurationServiceUrl}/Configuration`, config);
   }
 
   updateConfiguration(configId:string, config:Configuration) {

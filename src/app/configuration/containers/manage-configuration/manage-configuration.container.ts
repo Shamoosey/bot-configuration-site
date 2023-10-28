@@ -5,6 +5,9 @@ import { Observable, of } from "rxjs";
 import { Configuration, Trigger, User } from "../../models";
 import { ConfigurationActions, ConfigurationSelectors } from "../../store";
 import { DrawerView } from "../../models/drawer-view";
+import { ManageMode } from "../../models/manageMode";
+import { ConfigurationViewMode } from "../../models/configurationViewMode";
+import { ConfigurationUpdate } from "../../models/configurationUpdate";
 
 
 @Component({
@@ -15,7 +18,14 @@ export class ManageConfigurationContainer implements OnInit {
   configuration$:Observable<Configuration | null> = of(null)
   users$:Observable<User[]> = of([])
   triggers$:Observable<Trigger[]> = of([])
+  managedConfigurationId$: Observable<string> = of("")
+  selectedTrigger$: Observable<Trigger | null> = of(null)
+  selectedUser$: Observable<User | null> = of(null)
   drawerViewState$:Observable<DrawerView> = of("none");
+  configurationManangeMode$: Observable<ManageMode> = of("create");
+  configurationViewMode$: Observable<ConfigurationViewMode> = of("view");
+  triggerManangeMode$: Observable<ManageMode> = of("create");
+  userManangeMode$: Observable<ManageMode> = of("create");
 
   constructor(
     private store: Store<ConfigurationState>
@@ -25,11 +35,26 @@ export class ManageConfigurationContainer implements OnInit {
     this.configuration$ = this.store.select(ConfigurationSelectors.getManagedConfiguration)
     this.triggers$ = this.store.select(ConfigurationSelectors.getManagedTriggers)
     this.users$ = this.store.select(ConfigurationSelectors.getManagedUsers)
+    this.selectedUser$ = this.store.select(ConfigurationSelectors.getSelectedUser)
+    this.selectedTrigger$ = this.store.select(ConfigurationSelectors.getSelectedTrigger)
     this.drawerViewState$ = this.store.select(ConfigurationSelectors.getDrawerViewState)
+    this.managedConfigurationId$ = this.store.select(ConfigurationSelectors.getManagedConfigurationId)
+    this.configurationManangeMode$ = this.store.select(ConfigurationSelectors.getConfigurationManageMode)
+    this.configurationViewMode$ = this.store.select(ConfigurationSelectors.getConfigurationViewMode)
+    this.triggerManangeMode$ = this.store.select(ConfigurationSelectors.getTriggerManageMode)
+    this.userManangeMode$ = this.store.select(ConfigurationSelectors.getUserManageMode)
   }
 
-  onDrawerViewChange(drawer: { view: DrawerView, id?: string }) {
-    this.store.dispatch(ConfigurationActions.DrawerViewChange({ drawer }))
+  onSelectedConfigurationValueChange(updatedConfigData: ConfigurationUpdate){
+    this.store.dispatch(ConfigurationActions.SelectedConfigurationValueChange({updatedConfigData}))
+  }
+
+  onDrawerViewChange(drawerToggle: { view: DrawerView, id?: string }) {
+    this.store.dispatch(ConfigurationActions.DrawerViewChange({ drawerToggle }))
+  }
+
+  onToggleViewMode(mode: ConfigurationViewMode){
+    this.store.dispatch(ConfigurationActions.ConfigurationViewModeChange({ mode }))
   }
 
   onConfigurationEdit(configuration: Configuration){
@@ -40,8 +65,8 @@ export class ManageConfigurationContainer implements OnInit {
     this.store.dispatch(ConfigurationActions.ConfigurationCreate({ configuration }))
   }
 
-  onConfigurationDelete(configId: string){
-    this.store.dispatch(ConfigurationActions.ConfigurationDelete({ configurationId: configId }))
+  onConfigurationDelete(configurationId: string){
+    this.store.dispatch(ConfigurationActions.ConfigurationDelete({ configurationId }))
   }
 
   onTriggerCreate(trigger: Trigger){

@@ -3,29 +3,39 @@ import { Configuration, Trigger, User } from "../models";
 import * as ConfigurationActions from "./configuration.actions"
 import * as fromRouter from '@ngrx/router-store';
 import { DrawerView } from "../models/drawer-view";
+import { ManageMode } from "../models/manageMode";
+import { ConfigurationViewMode } from "../models/configurationViewMode";
 
 export const configurationFeatureKey = "configuration"
 
 export interface ConfigurationState {
-  configurations: Configuration[],
+  configurations: Configuration[] | null,
   managedConfigurationId: string | null,
   managedConfiguration: Configuration | null,
   managedUsers: User[];
+  selectedUser: User | null;
   managedTriggers: Trigger[];
-  selectedUserId: string | null;
-  selectedTriggerId: string | null;
+  selectedTrigger: Trigger | null;
   drawerViewState: DrawerView
+  configurationManageMode: ManageMode,
+  triggerManageMode: ManageMode,
+  userManageMode: ManageMode,
+  configurationViewMode: ConfigurationViewMode
 }
 
 const initialState: ConfigurationState = {
-  configurations: [],
+  configurations: null,
   managedConfigurationId: null,
   managedConfiguration: null,
   managedTriggers: [],
   managedUsers: [],
-  selectedTriggerId: null,
-  selectedUserId: null,
-  drawerViewState: "none"
+  selectedTrigger: null,
+  selectedUser: null,
+  drawerViewState: "none",
+  configurationManageMode: "create",
+  triggerManageMode: "create",
+  userManageMode: "create",
+  configurationViewMode: "view"
 };
 
 export const configurationReducer = createReducer(
@@ -43,7 +53,8 @@ export const configurationReducer = createReducer(
       managedConfigurationId: configurationId,
       managedTriggers: [],
       managedUsers: [],
-      managedConfiguration: null
+      managedConfiguration: null,
+      configurationManageMode: (configurationId == null ? "create" : "edit") as ManageMode
     }
   }),
   on(ConfigurationActions.LoadManagedConfigurationSuccess, (state, { configuration }) => {
@@ -51,7 +62,7 @@ export const configurationReducer = createReducer(
       ...state,
       managedConfiguration: configuration,
       managedTriggers: configuration.triggers,
-      managedUsers: configuration.users
+      managedUsers: configuration.users,
     }
   }),
   on(ConfigurationActions.LoadManagedConfigurationFail, (state, { error }) => {
@@ -59,23 +70,56 @@ export const configurationReducer = createReducer(
       ...state
     }
   }),
-  on(ConfigurationActions.DrawerViewChange, (state, { drawer }) => {
-    let selectedTriggerId = null;
-    let selectedUserId = null;
+  on(ConfigurationActions.ConfigurationViewModeChange, (state, { mode }) => {
+    return {
+      ...state,
+      configurationViewMode: mode
+    }
+  }),
+  on(ConfigurationActions.ConfigurationManangeModeChange, (state, { mode }) => {
+    return {
+      ...state,
+      configurationManageMode: mode
+    }
+  }),
+  on(ConfigurationActions.DrawerViewChange, (state, { drawerToggle }) => {
+    let selectedUser = null;
+    let selectedTrigger = null;
 
-    if(drawer.view == "user"){
-      selectedUserId= drawer.id;
-    } else if (drawer.view == "trigger") {
-      selectedTriggerId = drawer.id;
+    if(drawerToggle.view == "user"){
+      const selectedUserIndex = state.managedUsers.findIndex(x => x.id == drawerToggle.id)
+      if(selectedUserIndex > -1){
+        selectedUser = state.managedUsers[selectedUserIndex];
+      }
+    } else if (drawerToggle.view == "trigger") {
+      const selectedTriggerIndex = state.managedTriggers.findIndex(x => x.id == drawerToggle.id)
+      if(selectedTriggerIndex > -1){
+        selectedTrigger = state.managedTriggers[selectedTriggerIndex];
+      }
     }
 
     return {
       ...state,
-      drawerViewState: drawer.view,
-      selectedTriggerId,
-      selectedUserId
+      drawerViewState: drawerToggle.view,
+      selectedTrigger: selectedTrigger,
+      selectedUser: selectedUser,
+      userManageMode: (selectedUser == null ? "create" : "edit") as ManageMode,
+      triggerManageMode: (selectedTrigger == null ? "create" : "edit") as ManageMode,
+      configurationViewMode: "view" as ConfigurationViewMode 
     }
   }),
+  on(ConfigurationActions.TriggerRefreshSuccess, (state, { triggers }) => {
+    return {
+      ...state,
+      managedTriggers: triggers
+    }
+  }),
+  on(ConfigurationActions.UserRefreshSuccess, (state, { users }) => {
+    return {
+      ...state,
+      managedUsers: users
+    }
+  })
 )
 
 export function reducer(state: ConfigurationState | undefined, action: Action) {

@@ -1,10 +1,24 @@
 import { createAction, props } from "@ngrx/store";
-import { Configuration, Trigger, User } from "../models";
+import { Configuration, Trigger, UpdateResult, User } from "../models";
 import { DrawerView } from "../models/drawer-view";
 import { UpdateType } from "../models/updateType";
+import { ConfigurationViewMode } from "../models/configurationViewMode";
+import { ManageMode } from "../models/manageMode";
+import { ConfigurationUpdate } from "../models/configurationUpdate";
 
 export const LoadConfigurations = createAction(
-  '[Configurations] Load Configurations'
+  '[Configurations] Load Configurations',
+  props<{useCache: boolean}>()
+);
+
+export const ConfigurationManangeModeChange = createAction(
+  '[Configurations] Manage Mode Change',
+  props<{mode: ManageMode}>()
+);
+
+export const ConfigurationViewModeChange = createAction(
+  '[Configurations] View Mode Change',
+  props<{mode: ConfigurationViewMode}>()
 );
 
 export const LoadConfigurationsSuccess = createAction(
@@ -33,8 +47,13 @@ export const LoadManagedConfigurationFail = createAction(
 
 export const DrawerViewChange = createAction(
   '[Configurations] DrawViewChange',
-  props<{drawer: { view: DrawerView, id?: string }}>()
+  props<{drawerToggle: { view: DrawerView, id?: string }}>()
 );
+
+export const SelectedConfigurationValueChange = createAction(
+  "[Configurations] Selected Configuration Value Change",
+  props<{updatedConfigData: ConfigurationUpdate }>()
+)
 
 export const ConfigurationCreate = createAction(
   '[Configurations] Configuration Create',
@@ -53,10 +72,21 @@ export const ConfigurationDelete = createAction(
 
 export const ConfigurationUpdateSuccess = createAction(
   '[Configurations] Configuration Update Success',
+  props<UpdateResult>()
 );
 
 export const ConfigurationUpdateFail = createAction(
   '[Configurations] Configuration Update Fail',
+  props<UpdateResult>()
+);
+
+export const TriggerRefreshSuccess = createAction(
+  '[Configurations] Trigger RefreshSuccess',
+  props<{triggers: Trigger[]}>()
+);
+
+export const TriggerRefreshFail = createAction(
+  '[Configurations] Trigger RefreshFail',
   props<{error: string}>()
 );
 
@@ -77,11 +107,12 @@ export const TriggerDelete = createAction(
 
 export const TriggerUpdateSuccess = createAction(
   '[Configurations] Trigger Update Success',
+  props<UpdateResult>()
 );
 
 export const TriggerUpdateFail = createAction(
   '[Configurations] Trigger Update Fail',
-  props<{error: string}>()
+  props<UpdateResult>()
 );
 
 export const UserCreate = createAction(
@@ -101,10 +132,20 @@ export const UserDelete = createAction(
 
 export const UserUpdateSuccess = createAction(
   '[Configurations] User Update Success',
-  props<{updateType: UpdateType}>
+  props<UpdateResult>()
 );
 
 export const UserUpdateFail = createAction(
   '[Configurations] User Update Fail',
+  props<UpdateResult>()
+);
+
+export const UserRefreshSuccess = createAction(
+  '[Configurations] User RefreshSuccess',
+  props<{users: User[]}>()
+);
+
+export const UserRefreshFail = createAction(
+  '[Configurations] User RefreshFail',
   props<{error: string}>()
 );

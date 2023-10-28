@@ -19,7 +19,7 @@ export class UserService {
   }
 
   createUser(user:User, configId: string) {
-    return this.http.post(`${environment.configurationServiceUrl}/User?configId=${configId}`, user);
+    return this.http.post<boolean>(`${environment.configurationServiceUrl}/User?configId=${configId}`, user);
   }
 
   updateUser(userId:string, user:User) {

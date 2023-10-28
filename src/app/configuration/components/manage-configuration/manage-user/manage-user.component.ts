@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, takeUntil } from 'rxjs';
+import { ManageMode } from 'src/app/configuration/models/manageMode';
 import { User } from 'src/app/configuration/models/user';
 import { UserService } from 'src/app/configuration/services/user.service';
 
@@ -12,6 +13,7 @@ import { UserService } from 'src/app/configuration/services/user.service';
 export class ManageUserComponent implements OnInit, OnChanges {
   @Input() user: User | null;
   @Input() editMode: boolean;
+  @Input() manageMode: ManageMode;
 
   @Output() onClose = new EventEmitter();
   @Output() onUserEdit = new EventEmitter<User>();
@@ -19,9 +21,6 @@ export class ManageUserComponent implements OnInit, OnChanges {
 
   userForm: FormGroup;
 
-  get manageMode() {
-    return this.user != null;
-  }
 
   constructor(
     private fb: FormBuilder,
@@ -51,12 +50,13 @@ export class ManageUserComponent implements OnInit, OnChanges {
     this.userForm.markAllAsTouched();
     if(this.userForm.status != "INVALID" && this.editMode) {
       let submittedUser: User = {
+        id: this.user ? this.user.id : null,
         discordUserId: this.userForm.controls["discordUserId"].value,
         isSecret: this.userForm.controls["isSecret"].value,
         userName: this.userForm.controls["username"].value
       } 
 
-      if(this.manageMode){
+      if(this.manageMode == "edit"){
         this.onUserEdit.emit(submittedUser)
       } else {
         this.onUserCreate.emit(submittedUser)

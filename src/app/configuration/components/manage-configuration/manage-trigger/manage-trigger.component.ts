@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { ManageMode } from 'src/app/configuration/models/manageMode';
 import { Trigger } from 'src/app/configuration/models/trigger';
 
 @Component({
@@ -11,6 +12,7 @@ import { Trigger } from 'src/app/configuration/models/trigger';
 export class ManageTriggerComponent implements OnInit, OnChanges {
   @Input() trigger: Trigger | null;
   @Input() editMode: boolean;
+  @Input() manageMode: ManageMode;
 
   @Output() onClose = new EventEmitter();
   @Output() onTriggerEdit = new EventEmitter<Trigger>();
@@ -22,10 +24,6 @@ export class ManageTriggerComponent implements OnInit, OnChanges {
   triggerWords: string[] = [];
   reactEmotes: string[] = [];
 
-  get manageMode() {
-    return this.trigger != null;
-  }
-
   constructor(
     private fb: FormBuilder,
   ) { 
@@ -36,8 +34,13 @@ export class ManageTriggerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes) {
-    if("triggerId" in changes && this.trigger != null){
+    if(this.trigger != null){
       this.initializeForm()
+      this.triggerResponses = [...this.trigger.triggerResponses]
+      this.triggerWords = [...this.trigger.triggerWords]
+      this.reactEmotes = [...this.trigger.reactEmotes]
+    } else { 
+      this.resetForm()
     }
   }
 
@@ -54,6 +57,7 @@ export class ManageTriggerComponent implements OnInit, OnChanges {
     this.triggerForm.markAllAsTouched();
     if(this.triggerForm.status != "INVALID" && this.editMode) {
       let submittedTrigger: Trigger = {
+        id: this.trigger ? this.trigger.id : null,
         name: this.triggerForm.controls["name"].value,
         messageDelete: this.triggerForm.controls["messageDelete"].value,
         sendRandomResponse: this.triggerForm.controls["sendRandomResponse"].value,
@@ -63,7 +67,7 @@ export class ManageTriggerComponent implements OnInit, OnChanges {
         triggerResponses: this.triggerResponses,
       } 
 
-      if(this.manageMode){
+      if(this.manageMode == "edit"){
         this.onTriggerEdit.emit(submittedTrigger)
       } else {
         this.onTriggerCreate.emit(submittedTrigger)
@@ -78,7 +82,6 @@ export class ManageTriggerComponent implements OnInit, OnChanges {
     this.triggerResponses = [];
     this.triggerWords = [];
     this.reactEmotes = [];
-    this.triggerForm.reset();
   }
 
   removeTriggerWord(triggerWord: string){

@@ -19,7 +19,7 @@ export class TriggerService {
   }
 
   createTrigger(trigger:Trigger, configId: string) {
-    return this.http.post(`${environment.configurationServiceUrl}/Trigger?configId=${configId}`, trigger);
+    return this.http.post<boolean>(`${environment.configurationServiceUrl}/Trigger?configId=${configId}`, trigger);
   }
 
   updateTrigger(triggerId:string, trigger:Trigger) {
