@@ -12,8 +12,7 @@
   [triggerManageMode]="(triggerManangeMode$ | async)"
   (toggleViewMode)="onToggleViewMode($event)"
   (drawerViewChange)="onDrawerViewChange($event)"
-  (createConfiguration)="onConfigurationCreate($event)"
-  (editConfiguration)="onConfigurationEdit($event)"
+  (submitClicked)="onSubmitConfiguration()"
   (deleteConfiguration)="onConfigurationDelete($event)"
   (editUser)="onUserEdit($event)"
   (deleteUser)="onUserDelete($event)"
@@ -21,4 +20,5 @@
   (editTrigger)="onTriggerEdit($event)"
   (deleteTrigger)="onTriggerDelete($event)"
   (createTrigger)="onTriggerCreate($event)"
+  (configurationValueChange)="onConfigurationValueChange($event)"
 ></app-manage-configuration>

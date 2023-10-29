@@ -55,14 +55,8 @@ export const SelectedConfigurationValueChange = createAction(
   props<{updatedConfigData: ConfigurationUpdate }>()
 )
 
-export const ConfigurationCreate = createAction(
-  '[Configurations] Configuration Create',
-  props<{configuration: Configuration}>()
-);
-
-export const ConfigurationEdit = createAction(
-  '[Configurations] Configuration Edit',
-  props<{configuration: Configuration}>()
+export const ManagedConfigurationUpdateSubmit = createAction(
+  '[Configurations] Managed Configuration Update Submit'
 );
 
 export const ConfigurationDelete = createAction(

@@ -40,7 +40,8 @@
               <mat-label>Server ID</mat-label>
               <input 
                 matInput 
-                placeholder="Server ID" 
+                placeholder="Server ID"
+                (change)="onConfigurationValueChange()"
                 formControlName="serverId">
             </mat-form-field>
 
@@ -48,27 +49,28 @@
               <mat-label>Default Channel</mat-label>
               <input 
                 matInput 
-                placeholder="Default Channel" 
-                formControlName="defaultChannel" 
-                [readonly]="viewMode == 'view'">
+                placeholder="Default Channel"
+                (change)="onConfigurationValueChange()"
+                formControlName="defaultChannel" >
             </mat-form-field>
 
-            <mat-slide-toggle 
+            <mat-checkbox 
+              class="kickCacheToggle"
+              formControlName="enableKickCache"
+              (change)="onKickCacheClick($event.checked, false)"
               color="primary" 
-              (change)="onKickCacheClick($event.checked)" 
-              [disabled]="viewMode == 'view'" 
-              formControlName="enableKickCache">
+              [disabled]="viewMode == 'view'" >
               Enable Kick Cache
-            </mat-slide-toggle>
+            </mat-checkbox>
         
             <mat-form-field class="form-field" appearance="outline">
               <mat-label>Kick Cacche Days</mat-label>
               <input 
                 matInput 
                 placeholder="Kick Cache Days" 
-                formControlName="kickCacheDays" 
-                type="number"
-                [readonly]="viewMode == 'view'">
+                formControlName="kickCacheDays"
+                (change)="onConfigurationValueChange()"
+                type="number">
             </mat-form-field>
           
             <mat-form-field class="form-field" appearance="outline">
@@ -76,27 +78,27 @@
               <input 
                 matInput 
                 placeholder="Kick Cache Hours" 
-                formControlName="kickCacheHours" 
-                type="number"
-                [readonly]="viewMode == 'view'">
+                formControlName="kickCacheHours"
+                (change)="onConfigurationValueChange()"
+                type="number">
             </mat-form-field>
           
             <mat-form-field class="form-field" appearance="outline">
               <mat-label>Kick Cache Server Message</mat-label>
               <input 
                 matInput 
-                placeholder="Kick Cache Server Message" 
-                formControlName="kickCacheServerMessage" 
-                [readonly]="viewMode == 'view'">
+                placeholder="Kick Cache Server Message"
+                (change)="onConfigurationValueChange()"
+                formControlName="kickCacheServerMessage" >
             </mat-form-field>
           
             <mat-form-field class="form-field" appearance="outline">
               <mat-label>Kick Cache User Message</mat-label>
               <input 
                 matInput 
-                placeholder="Kick Cache User Message" 
-                formControlName="kickCacheUserMessage" 
-                [readonly]="viewMode == 'view'">
+                placeholder="Kick Cache User Message"
+                (change)="onConfigurationValueChange()" 
+                formControlName="kickCacheUserMessage" >
             </mat-form-field>
 
             <div class="action-container">

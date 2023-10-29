@@ -58,41 +58,54 @@ export class ConfigurationEffects {
   ));
 
   //Configuration Effects
-  editConfiguration$ = createEffect(() => this.actions$.pipe(
-    ofType(ConfigurationActions.ConfigurationEdit),
-    mergeMap(({ configuration }) => {
+  updateCreateConfiguration$ = createEffect(() => this.actions$.pipe(
+    ofType(ConfigurationActions.ManagedConfigurationUpdateSubmit),
+    withLatestFrom(this.store.select(ConfigurationSelectors.getDataForManagedConfigurationSubmit)),
+    switchMap(([action, {configuration, manageMode}]) => {
+      let observable = of(false)
       let error = "Configuration is null|undefined";
       if(configuration !== null && configuration !== undefined){
-        const configId = configuration.id;
-        if(IsNotNullOrWhiteSpace(configId)){
-          return this.configurationService.updateConfiguration(configId, configuration)
-            .pipe(
-              map(result => ConfigurationActions.ConfigurationUpdateSuccess({ updateType: "edit", result})),
-              catchError(error => of(ConfigurationActions.ConfigurationUpdateFail({ updateType: "edit", result: false, error })))
-          )
+        if(manageMode == "create"){
+          const config = {...configuration}
+
+          if(!config.kickCacheDays){
+            config.kickCacheDays = 0
+          }
+
+          if(!config.kickCacheHours){
+            config.kickCacheHours = 0
+          }
+
+          if(!config.kickCacheServerMessage){
+            config.kickCacheServerMessage = ""
+          }
+
+          if(!config.kickCacheUserMessage){
+            config.kickCacheUserMessage = ""
+          }
+
+          observable = this.configurationService.createConfiguration(config);
         } else {
-          error = "ConfigurationId is null|undefined"
+          const configId = configuration.id;
+          if(IsNotNullOrWhiteSpace(configId)){
+            observable = this.configurationService.updateConfiguration(configId, configuration)
+          } else {
+            error = "ConfigurationId is null|undefined"
+          }
         }
       }
-  
-      return of(ConfigurationActions.ConfigurationUpdateFail({updateType: "edit", result: false, error }))
+      return observable.pipe(
+        map(result => {
+          if (result) {
+            return ConfigurationActions.ConfigurationUpdateSuccess({ updateType: manageMode, result});
+          } else {
+            return ConfigurationActions.ConfigurationUpdateFail({ updateType: manageMode, result, error});
+          }
+        }),
+        catchError(error => of(ConfigurationActions.ConfigurationUpdateFail({ updateType: manageMode, result: false, error }))))
     })
-  ));
+  ))
 
-  createConfiguration$ = createEffect(() => this.actions$.pipe(
-    ofType(ConfigurationActions.ConfigurationCreate),
-    mergeMap(({ configuration }) => {
-      if(configuration !== null && configuration !== undefined){
-        return this.configurationService.createConfiguration(configuration)
-          .pipe(
-            map(result => ConfigurationActions.ConfigurationUpdateSuccess({ updateType: "create", result})),
-            catchError(error => of(ConfigurationActions.ConfigurationUpdateFail({ updateType: "create", result: false, error})))
-        )
-      } else {
-        return of(ConfigurationActions.ConfigurationUpdateFail({ updateType: "create", result: false, error: "Configuration is null|undefined"}))
-      }
-    })
-  ));
 
   //Trigger Effects
   selectedTriggers$ = createEffect(() => this.actions$.pipe(

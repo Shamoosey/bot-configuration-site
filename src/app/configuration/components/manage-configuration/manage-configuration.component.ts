@@ -37,8 +37,7 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
   @Output() closeButtonClicked = new EventEmitter<void>();
   @Output() onChangeManageMode = new EventEmitter<ManageMode>();
   @Output() toggleViewMode = new EventEmitter<ConfigurationViewMode>();
-  @Output() createConfiguration = new EventEmitter<Configuration>();
-  @Output() editConfiguration = new EventEmitter<Configuration>();
+  @Output() submitClicked = new EventEmitter<void>();
   @Output() deleteConfiguration = new EventEmitter<string>();
   @Output() editUser = new EventEmitter<User>();
   @Output() createUser = new EventEmitter<User>();
@@ -75,7 +74,6 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
       this.editedConfig = null;
     }
     this.initializeForm();
-    this.configForm.valueChanges()
     this.handleDrawerStateChange();
   }
 
@@ -99,16 +97,19 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
   }
 
   initializeForm(){
+    const editedConfig = {...this.configuration}
+    const kickCacheEnabled = editedConfig?.enableKickCache ?? false
     this.configForm = this.fb.group({
-      "serverId": new FormControl({value: this.editedConfig?.serverId, disabled: this.viewMode == "view"}, [ Validators.required ]),
-      "defaultChannel": new FormControl(this.editedConfig?.defaultChannel, [ Validators.required ]),
-      "enableKickCache": new FormControl(this.editedConfig?.enableKickCache ?? false),
-      "kickCacheDays": new FormControl(this.editedConfig?.kickCacheDays),
-      "kickCacheHours": new FormControl(this.editedConfig?.kickCacheHours),
-      "kickCacheServerMessage": new FormControl(this.editedConfig?.kickCacheServerMessage),
-      "kickCacheUserMessage": new FormControl(this.editedConfig?.kickCacheUserMessage),
+      "serverId": new FormControl({value: editedConfig?.serverId, disabled: this.viewMode == "view"}, [ Validators.required ]),
+      "defaultChannel": new FormControl({value: editedConfig?.defaultChannel, disabled: this.viewMode == "view"}, [ Validators.required ]),
+      "enableKickCache": new FormControl({value: kickCacheEnabled, disabled: this.viewMode == "view"}),
+      "kickCacheDays": new FormControl({value: editedConfig?.kickCacheDays, disabled: this.viewMode == "view"}),
+      "kickCacheHours": new FormControl({value: editedConfig?.kickCacheHours, disabled: this.viewMode == "view"}),
+      "kickCacheServerMessage": new FormControl({value: editedConfig?.kickCacheServerMessage, disabled: this.viewMode == "view"}),
+      "kickCacheUserMessage": new FormControl({value: editedConfig?.kickCacheUserMessage, disabled: this.viewMode == "view"}),
     })
-    this.onKickCacheClick(this.configForm.controls["enableKickCache"].value);
+    console.log(kickCacheEnabled)
+    this.onKickCacheClick(kickCacheEnabled, true);
   }
 
   onSave(closeOnSuccess = false) {
@@ -133,8 +134,26 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
     }
   }
 
-  onKickCacheClick(mode: boolean) {
-    const cntrl = this.configForm.controls["enableKickCache"];
+  onConfigurationValueChange(){
+    const configData: Configuration = {
+      id: this.configuration?.id,
+      serverId: this.configForm.controls["serverId"].value,
+      defaultChannel: this.configForm.controls["defaultChannel"].value,
+      enableKickCache: this.configForm.controls["enableKickCache"].value,
+      kickCacheDays: this.configForm.controls["kickCacheDays"].value ?? 0,
+      kickCacheHours: this.configForm.controls["kickCacheHours"].value ?? 0,
+      kickCacheServerMessage: this.configForm.controls["kickCacheServerMessage"].value,
+      kickCacheUserMessage: this.configForm.controls["kickCacheUserMessage"].value,
+      name: "server name",
+      triggers: undefined,
+      users: undefined
+    }
+
+    this.configurationValueChange.emit(configData)
+    
+  }
+
+  onKickCacheClick(mode: boolean, isInit) {
     if(this.viewMode == 'edit'){
       for(var cntrlName of this.kickCacheControls){
         if(mode){
@@ -147,38 +166,18 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
         }
         this.configForm.controls[cntrlName].updateValueAndValidity()
       }
+      if(!isInit){
+        this.onConfigurationValueChange();
+      }
     }
   }
 
-  onClose(userClicked = false) {
+  onClose() {
     this.closeButtonClicked.emit();
   }
 
   onSubmit(){
-    const configData = this.getConfigurationFormData();
-    if(this.manageMode == 'edit'){
-      this.editConfiguration.emit(configData)
-    } else {
-      this.createConfiguration.emit(configData)
-    }
-  }
-
-  getConfigurationFormData(){
-    let config: Configuration = {
-      id: this.managedConfigurationId,
-      serverId: this.configForm.controls["serverId"].value,
-      defaultChannel: this.configForm.controls["defaultChannel"].value,
-      enableKickCache: this.configForm.controls["enableKickCache"].value,
-      kickCacheDays: this.configForm.controls["kickCacheDays"].value ?? 0,
-      kickCacheHours: this.configForm.controls["kickCacheHours"].value ?? 0,
-      kickCacheServerMessage: this.configForm.controls["kickCacheServerMessage"].value ?? "",
-      kickCacheUserMessage: this.configForm.controls["kickCacheUserMessage"].value ?? "",
-      name: "server name", // this value will be pulled from serverId when using discord auth,
-      triggers: undefined,
-      users: undefined // add back t he data later
-    }
-
-    return config;
+    this.submitClicked.emit()
   }
 
   onToggleViewModeClick(mode: boolean){

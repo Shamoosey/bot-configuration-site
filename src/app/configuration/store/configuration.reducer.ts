@@ -10,8 +10,8 @@ export const configurationFeatureKey = "configuration"
 
 export interface ConfigurationState {
   configurations: Configuration[] | null,
-  managedConfigurationId: string | null,
   managedConfiguration: Configuration | null,
+  editedManagedConfiguration: Configuration | null;
   managedUsers: User[];
   selectedUser: User | null;
   managedTriggers: Trigger[];
@@ -25,8 +25,8 @@ export interface ConfigurationState {
 
 const initialState: ConfigurationState = {
   configurations: null,
-  managedConfigurationId: null,
   managedConfiguration: null,
+  editedManagedConfiguration: null,
   managedTriggers: [],
   managedUsers: [],
   selectedTrigger: null,
@@ -50,10 +50,11 @@ export const configurationReducer = createReducer(
   on(ConfigurationActions.LoadManagedConfiguration, (state, { configurationId }) => {
     return {
       ...state,
-      managedConfigurationId: configurationId,
       managedTriggers: [],
       managedUsers: [],
       managedConfiguration: null,
+      editedManagedConfiguration: null,
+      configurationViewMode: (configurationId == null ? "edit" : "view") as ConfigurationViewMode,
       configurationManageMode: (configurationId == null ? "create" : "edit") as ManageMode
     }
   }),
@@ -61,6 +62,7 @@ export const configurationReducer = createReducer(
     return {
       ...state,
       managedConfiguration: configuration,
+      editedManagedConfiguration: configuration,
       managedTriggers: configuration.triggers,
       managedUsers: configuration.users,
     }
@@ -118,6 +120,14 @@ export const configurationReducer = createReducer(
     return {
       ...state,
       managedUsers: users
+    }
+  }),
+  on(ConfigurationActions.SelectedConfigurationValueChange, (state,{ updatedConfigData }) => {
+    return {
+      ...state,
+      editedManagedConfiguration: {
+        ...updatedConfigData
+      } as Configuration
     }
   })
 )

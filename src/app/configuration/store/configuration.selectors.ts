@@ -19,19 +19,27 @@ export const {
 
 export const configurationFeature = createFeatureSelector<ConfigurationState>(configurationFeatureKey)
 
-export const getConfiguations = createSelector(configurationFeature, (state) => state, state => {
+export const getConfiguations = createSelector(configurationFeature, state => {
   return state.configurations
 })
 
-export const getConfigurationManageMode = createSelector(configurationFeature, state => state, state => state.configurationManageMode)
-export const getTriggerManageMode = createSelector(configurationFeature, state => state, state => state.triggerManageMode)
-export const getUserManageMode = createSelector(configurationFeature, state => state, state => state.userManageMode)
-export const getConfigurationViewMode = createSelector(configurationFeature, state => state, state => state.configurationViewMode)
-export const getManagedConfiguration = createSelector(configurationFeature, (state) => state, state => state.managedConfiguration)
-export const getManagedTriggers = createSelector(configurationFeature, (state) => state, state => state.managedTriggers)
-export const getSelectedTrigger = createSelector(configurationFeature, (state) => state, state => state.selectedTrigger)
-export const getManagedUsers = createSelector(configurationFeature, (state) => state, state => state.managedUsers)
-export const getSelectedUser = createSelector(configurationFeature, (state) => state, state => state.selectedUser)
-export const getManagedConfigurationId = createSelector(configurationFeature, (state) => state, state => state.managedConfigurationId)
-export const getDrawerViewState = createSelector(configurationFeature, (state) => state, state => state.drawerViewState)
+
+export const getConfigurationManageMode = createSelector(configurationFeature, state => state.configurationManageMode)
+export const getTriggerManageMode = createSelector(configurationFeature, state => state.triggerManageMode)
+export const getUserManageMode = createSelector(configurationFeature, state => state.userManageMode)
+export const getConfigurationViewMode = createSelector(configurationFeature, state => state.configurationViewMode)
+export const getManagedConfiguration = createSelector(configurationFeature, state => state.managedConfiguration)
+export const getEditedManagedConfiguration = createSelector(configurationFeature, state => state.editedManagedConfiguration)
+export const getManagedTriggers = createSelector(configurationFeature, state => state.managedTriggers)
+export const getSelectedTrigger = createSelector(configurationFeature, state => state.selectedTrigger)
+export const getManagedUsers = createSelector(configurationFeature, state => state.managedUsers)
+export const getSelectedUser = createSelector(configurationFeature, state => state.selectedUser)
+export const getManagedConfigurationId = createSelector(configurationFeature, state => state.managedConfiguration?.id)
+export const getDrawerViewState = createSelector(configurationFeature, state => state.drawerViewState)
+export const getDataForManagedConfigurationSubmit = createSelector(configurationFeature, getConfigurationManageMode, getEditedManagedConfiguration, (configState, manageMode, configuration) => {
+  return {
+    manageMode, 
+    configuration
+  }
+})
 

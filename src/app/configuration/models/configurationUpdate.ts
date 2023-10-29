@@ -6,4 +6,5 @@ export interface ConfigurationUpdate {
   kickCacheHours: number,
   kickCacheServerMessage: string,
   kickCacheUserMessage: string,
+  name: string
 }

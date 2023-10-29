@@ -32,7 +32,7 @@ export class ManageConfigurationContainer implements OnInit {
   ){}
 
   ngOnInit(): void {
-    this.configuration$ = this.store.select(ConfigurationSelectors.getManagedConfiguration)
+    this.configuration$ = this.store.select(ConfigurationSelectors.getEditedManagedConfiguration)
     this.triggers$ = this.store.select(ConfigurationSelectors.getManagedTriggers)
     this.users$ = this.store.select(ConfigurationSelectors.getManagedUsers)
     this.selectedUser$ = this.store.select(ConfigurationSelectors.getSelectedUser)
@@ -45,7 +45,7 @@ export class ManageConfigurationContainer implements OnInit {
     this.userManangeMode$ = this.store.select(ConfigurationSelectors.getUserManageMode)
   }
 
-  onSelectedConfigurationValueChange(updatedConfigData: ConfigurationUpdate){
+  onConfigurationValueChange(updatedConfigData: ConfigurationUpdate){
     this.store.dispatch(ConfigurationActions.SelectedConfigurationValueChange({updatedConfigData}))
   }
 
@@ -57,12 +57,8 @@ export class ManageConfigurationContainer implements OnInit {
     this.store.dispatch(ConfigurationActions.ConfigurationViewModeChange({ mode }))
   }
 
-  onConfigurationEdit(configuration: Configuration){
-    this.store.dispatch(ConfigurationActions.ConfigurationEdit({ configuration }))
-  }
-
-  onConfigurationCreate(configuration: Configuration){
-    this.store.dispatch(ConfigurationActions.ConfigurationCreate({ configuration }))
+  onSubmitConfiguration(){
+    this.store.dispatch(ConfigurationActions.ManagedConfigurationUpdateSubmit())
   }
 
   onConfigurationDelete(configurationId: string){
