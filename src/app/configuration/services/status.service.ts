@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Status } from "bot-configuration-types";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
-import { Status } from "../models/status";
 
 @Injectable()
 export class StatusService {

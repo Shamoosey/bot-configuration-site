@@ -2,12 +2,12 @@ import { Component, OnInit } from "@angular/core";
 import { ConfigurationState } from "../../store/configuration.reducer";
 import { Store } from "@ngrx/store";
 import { Observable, of } from "rxjs";
-import { Configuration, Trigger, User } from "../../models";
 import { ConfigurationActions, ConfigurationSelectors } from "../../store";
 import { DrawerView } from "../../models/drawer-view";
 import { ManageMode } from "../../models/manageMode";
 import { ConfigurationViewMode } from "../../models/configurationViewMode";
 import { ConfigurationUpdate } from "../../models/configurationUpdate";
+import { Configuration, Trigger, User } from "bot-configuration-types";
 
 
 @Component({

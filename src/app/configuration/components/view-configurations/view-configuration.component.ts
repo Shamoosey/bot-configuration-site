@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
-import { Configuration } from '../../models/configuration';
+import { Configuration } from 'bot-configuration-types';
 
 @Component({
   selector: 'app-view-configuration',

@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ConfigurationState } from "../../store/configuration.reducer";
 import { Store } from "@ngrx/store";
-
-import { Configuration } from "../../models";
+import { Configuration } from "bot-configuration-types";
 import { Observable, of } from "rxjs";
 import { ConfigurationActions, ConfigurationSelectors } from "../../store";
 

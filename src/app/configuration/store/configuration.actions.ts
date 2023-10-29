@@ -1,5 +1,6 @@
 import { createAction, props } from "@ngrx/store";
-import { Configuration, Trigger, UpdateResult, User } from "../models";
+import { UpdateResult, } from "../models";
+import { Configuration, User, Trigger} from 'bot-configuration-types';
 import { DrawerView } from "../models/drawer-view";
 import { ConfigurationViewMode } from "../models/configurationViewMode";
 import { ManageMode } from "../models/manageMode";

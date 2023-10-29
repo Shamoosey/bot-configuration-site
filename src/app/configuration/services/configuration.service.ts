@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Configuration } from "bot-configuration-types";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
-import { Configuration } from "../models/configuration";
 
 @Injectable()
 export class ConfigurationService {

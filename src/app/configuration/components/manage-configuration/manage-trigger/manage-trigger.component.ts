@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, V
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { ManageMode } from 'src/app/configuration/models/manageMode';
-import { Trigger } from 'src/app/configuration/models/trigger';
+import { Trigger } from 'bot-configuration-types';
 
 @Component({
   selector: 'app-manage-trigger',

@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { User } from "bot-configuration-types";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
-import { User } from "../models/user";
 
 @Injectable()
 export class UserService {

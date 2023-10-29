@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, S
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { ManageMode } from 'src/app/configuration/models/manageMode';
-import { User } from 'src/app/configuration/models/user';
+import { User } from 'bot-configuration-types';
 import { UserService } from 'src/app/configuration/services/user.service';
 
 @Component({

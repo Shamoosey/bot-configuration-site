@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { Trigger } from 'src/app/configuration/models';
+import { Trigger } from 'bot-configuration-types';
 
 @Component({
   selector: 'app-trigger-table',

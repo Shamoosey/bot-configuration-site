@@ -1,15 +1,11 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
-import { ConfigurationService } from '../../services/configuration.service';
-import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../../../shared/components/dialog-component/dialog.component';
 import { DialogData } from '../../../shared/models/dialog-data';
 import { DialogResult } from '../../../shared/models/dialog-result';
-import { Trigger } from '../../models/trigger';
-import { User } from '../../models/user';
-import { Configuration } from 'src/app/configuration/models/configuration';
+import { Configuration, User, Trigger} from 'bot-configuration-types';
 import { DrawerView } from '../../models/drawer-view';
 import { firstValueFrom } from 'rxjs';
 import { ManageMode } from '../../models/manageMode';

@@ -1,7 +1,6 @@
 import { Action, createReducer, on } from "@ngrx/store";
-import { Configuration, Trigger, User } from "../models";
 import * as ConfigurationActions from "./configuration.actions"
-import * as fromRouter from '@ngrx/router-store';
+import { Configuration, Trigger, User } from "bot-configuration-types"
 import { DrawerView } from "../models/drawer-view";
 import { ManageMode } from "../models/manageMode";
 import { ConfigurationViewMode } from "../models/configurationViewMode";
