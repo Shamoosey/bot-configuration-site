@@ -32,7 +32,6 @@ export class ViewConfigurationComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
     if(changes["configurations"].currentValue){
       this.dataSource.data = changes["configurations"].currentValue;
       this.dataSource.sort = this.sort;

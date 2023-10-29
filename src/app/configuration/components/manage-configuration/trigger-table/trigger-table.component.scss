@@ -16,6 +16,7 @@
 
     .mat-column-icon {
       flex: 0 5% !important;
+      min-width: 80px;
       &.edit-mode {
         cursor: pointer;
       }

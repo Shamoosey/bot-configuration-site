@@ -9,9 +9,10 @@ import { ConfigurationViewMode } from "../models/configurationViewMode";
 export const configurationFeatureKey = "configuration"
 
 export interface ConfigurationState {
-  configurations: Configuration[] | null,
+  configurations: Configuration[],
   managedConfiguration: Configuration | null,
   editedManagedConfiguration: Configuration | null;
+  managedConfigurationId: string | null,
   managedUsers: User[];
   selectedUser: User | null;
   managedTriggers: Trigger[];
@@ -24,9 +25,10 @@ export interface ConfigurationState {
 }
 
 const initialState: ConfigurationState = {
-  configurations: null,
+  configurations: [],
   managedConfiguration: null,
   editedManagedConfiguration: null,
+  managedConfigurationId: null,
   managedTriggers: [],
   managedUsers: [],
   selectedTrigger: null,
@@ -40,13 +42,26 @@ const initialState: ConfigurationState = {
 
 export const configurationReducer = createReducer(
   initialState,
+  on(ConfigurationActions.ManagedConfigurationIdChange, (state, { configurationId }) => {
+    return {
+      ...state,
+      managedConfigurationId: configurationId,
+      configurationViewMode: (configurationId == null ? "edit" : "view") as ConfigurationViewMode,
+    }
+  }),
   on(ConfigurationActions.LoadConfigurationsSuccess, (state, { configurations }) => {
     return {
       ...state,
       configurations
     }
   }),
-  on(ConfigurationActions.LoadConfigurationsFail, (state) => state),
+  on(ConfigurationActions.LoadConfigurationsFail, (state) => {
+    return {
+      ...state,
+      configurations: [],
+      configurationViewMode: "view" as ConfigurationViewMode,
+    }
+  }),
   on(ConfigurationActions.LoadManagedConfiguration, (state, { configurationId }) => {
     return {
       ...state,
@@ -54,13 +69,20 @@ export const configurationReducer = createReducer(
       managedUsers: [],
       managedConfiguration: null,
       editedManagedConfiguration: null,
-      configurationViewMode: (configurationId == null ? "edit" : "view") as ConfigurationViewMode,
       configurationManageMode: (configurationId == null ? "create" : "edit") as ManageMode
     }
   }),
   on(ConfigurationActions.LoadManagedConfigurationSuccess, (state, { configuration }) => {
+    const loadedConfigs = [...state.configurations]
+
+    const foundIndex = loadedConfigs.findIndex(x => x.id == configuration.id)
+    if(foundIndex > -1){
+      loadedConfigs.splice(foundIndex, 1, configuration)
+    }
+
     return {
       ...state,
+      configurations: loadedConfigs,
       managedConfiguration: configuration,
       editedManagedConfiguration: configuration,
       managedTriggers: configuration.triggers,
@@ -69,7 +91,15 @@ export const configurationReducer = createReducer(
   }),
   on(ConfigurationActions.LoadManagedConfigurationFail, (state, { error }) => {
     return {
-      ...state
+      ...state,
+      managedConfigurationId: null,
+      managedConfiguration: null,
+      selectedTrigger: null,
+      selectedUser: null,
+      configurationViewMode: "edit" as ConfigurationViewMode,
+      configurationManageMode: "create" as ManageMode,
+      managedUsers: [],
+      managedTriggers: [],
     }
   }),
   on(ConfigurationActions.ConfigurationViewModeChange, (state, { mode }) => {
@@ -107,7 +137,6 @@ export const configurationReducer = createReducer(
       selectedUser: selectedUser,
       userManageMode: (selectedUser == null ? "create" : "edit") as ManageMode,
       triggerManageMode: (selectedTrigger == null ? "create" : "edit") as ManageMode,
-      configurationViewMode: "view" as ConfigurationViewMode 
     }
   }),
   on(ConfigurationActions.TriggerRefreshSuccess, (state, { triggers }) => {

@@ -23,6 +23,13 @@ export const getConfiguations = createSelector(configurationFeature, state => {
   return state.configurations
 })
 
+export const getManagedConfigRouteData = createSelector(configurationFeature, selectQueryParam("configuration_id"), (state, routeConfigId) => { 
+  return {
+    currentConfigId: state.managedConfigurationId, 
+    routeConfigId: routeConfigId
+  }
+})
+
 
 export const getConfigurationManageMode = createSelector(configurationFeature, state => state.configurationManageMode)
 export const getTriggerManageMode = createSelector(configurationFeature, state => state.triggerManageMode)

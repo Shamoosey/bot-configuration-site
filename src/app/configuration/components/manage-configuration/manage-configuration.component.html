@@ -30,12 +30,21 @@
             <mat-slide-toggle 
               color="primary" 
               (change)="onToggleViewModeClick($event.checked)" 
-              [checked]="viewMode != 'view'"
+              [checked]="viewMode == 'edit'"
               *ngIf="manageMode != 'create'">
               Edit Mode
             </mat-slide-toggle>
           </div>
           <form [formGroup]="configForm">
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Server Name</mat-label>
+              <input 
+                matInput 
+                placeholder="Server Name"
+                (change)="onConfigurationValueChange()"
+                formControlName="serverName">
+            </mat-form-field>
+
             <mat-form-field class="form-field" appearance="outline">
               <mat-label>Server ID</mat-label>
               <input 

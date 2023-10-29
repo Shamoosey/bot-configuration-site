@@ -1,15 +1,18 @@
 import { createAction, props } from "@ngrx/store";
 import { Configuration, Trigger, UpdateResult, User } from "../models";
 import { DrawerView } from "../models/drawer-view";
-import { UpdateType } from "../models/updateType";
 import { ConfigurationViewMode } from "../models/configurationViewMode";
 import { ManageMode } from "../models/manageMode";
 import { ConfigurationUpdate } from "../models/configurationUpdate";
 
 export const LoadConfigurations = createAction(
-  '[Configurations] Load Configurations',
-  props<{useCache: boolean}>()
+  '[Configurations] Load Configurations'
 );
+
+export const ManagedConfigurationIdChange = createAction(
+  '[Configurations] Managed Configuration Id Change',
+  props<{configurationId: string}>()
+)
 
 export const ConfigurationManangeModeChange = createAction(
   '[Configurations] Manage Mode Change',
@@ -74,6 +77,10 @@ export const ConfigurationUpdateFail = createAction(
   props<UpdateResult>()
 );
 
+export const TriggerRefresh = createAction(
+  '[Configurations] Trigger Refresh'
+);
+
 export const TriggerRefreshSuccess = createAction(
   '[Configurations] Trigger RefreshSuccess',
   props<{triggers: Trigger[]}>()
@@ -134,12 +141,20 @@ export const UserUpdateFail = createAction(
   props<UpdateResult>()
 );
 
+export const UserRefresh = createAction(
+  '[Configurations] Users Refresh'
+);
+
 export const UserRefreshSuccess = createAction(
-  '[Configurations] User RefreshSuccess',
+  '[Configurations] User Refresh Success',
   props<{users: User[]}>()
 );
 
 export const UserRefreshFail = createAction(
-  '[Configurations] User RefreshFail',
+  '[Configurations] User Refresh Fail',
   props<{error: string}>()
 );
+
+export const NoOperation = createAction(
+  '[Configurations] No Operation'
+)

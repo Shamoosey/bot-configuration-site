@@ -7,34 +7,56 @@ import * as ConfigurationActions from "./configuration.actions"
 import * as ConfigurationSelectors from "./configuration.selectors"
 import { ConfigurationState } from "./configuration.reducer";
 import * as fromRouter from '@ngrx/router-store';
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { IsNotNullOrWhiteSpace } from "src/app/shared/helpers/utils";
 
 @Injectable()
 export class ConfigurationEffects {
+  private readonly SNACK_BAR_DURATION = 5000; 
+
   constructor(
     private store: Store<ConfigurationState>,
     private actions$: Actions,
     private configurationService: ConfigurationService,
     private triggerService: TriggerService,
-    private userService: UserService
-  ) {}
+    private userService: UserService,
+    private snackBar: MatSnackBar
 
-  loadConfigurations$ = createEffect(() => this.actions$.pipe(
-    ofType(ConfigurationActions.LoadConfigurations),
-    withLatestFrom(this.store.select(ConfigurationSelectors.getConfiguations)),
-    switchMap(([{ useCache }, configurations]) => {
-      if(configurations != null && useCache) {
-        return of(ConfigurationActions.LoadConfigurationsSuccess({ configurations }))
+  ) {}
+  
+  //#region Configuration Effects
+  routeNavigationSelectedId$ = createEffect(() => this.actions$.pipe(
+    ofType(fromRouter.ROUTER_NAVIGATION),
+    withLatestFrom(this.store.select(ConfigurationSelectors.getManagedConfigRouteData)),
+    switchMap(([{ action }, {routeConfigId, currentConfigId }]) => {
+      if(currentConfigId != routeConfigId){
+        return of(ConfigurationActions.LoadManagedConfiguration({ configurationId: routeConfigId }))
       } else {
-        return this.configurationService.getConfiguations()
-          .pipe(
-            map(configurations => ConfigurationActions.LoadConfigurationsSuccess({ configurations })),
-            catchError(error => of(ConfigurationActions.LoadConfigurationsFail()))
-        )
+        return of(ConfigurationActions.NoOperation())
       }
     })
   ));
 
-  loadManagedConfigurations$ = createEffect(() => this.actions$.pipe(
+  loadConfigurations$ = createEffect(() => this.actions$.pipe(
+    ofType(ConfigurationActions.LoadConfigurations),
+    mergeMap(() => {
+      return this.configurationService.getConfiguations()
+        .pipe(
+          map(configurations => ConfigurationActions.LoadConfigurationsSuccess({ configurations })),
+          catchError(error => of(ConfigurationActions.LoadConfigurationsFail()))
+      )
+      
+    })
+  ));
+
+  managedConfigurationIdChange$ = createEffect(() => this.actions$.pipe(
+    ofType(ConfigurationActions.ManagedConfigurationIdChange),
+    mergeMap(({ configurationId }) => {
+      return of(ConfigurationActions.LoadManagedConfiguration({ configurationId }))
+    })
+  ));
+
+  loadManagedConfiguration$ = createEffect(() => this.actions$.pipe(
     ofType(ConfigurationActions.LoadManagedConfiguration),
     mergeMap(({ configurationId }) => {
       if(IsNotNullOrWhiteSpace(configurationId)){
@@ -49,15 +71,32 @@ export class ConfigurationEffects {
     })
   ));
 
-  routeNavigationSelectedId$ = createEffect(() => this.actions$.pipe(
-    ofType(fromRouter.ROUTER_NAVIGATION),
-    mergeMap(() => this.store.pipe(
-      select(ConfigurationSelectors.selectQueryParam("configuration_id")))
-    ),
-    map((id: string) => ConfigurationActions.LoadManagedConfiguration({ configurationId: id })),
+  loadManagedConfigurationFail$ = createEffect(() => this.actions$.pipe(
+    ofType(ConfigurationActions.LoadManagedConfigurationFail),
+    mergeMap(({ error }) => {
+      this.snackBar.open("Unable to load managed configuration", null, {duration: this.SNACK_BAR_DURATION})
+      return of(ConfigurationActions.NoOperation())
+    })
   ));
 
-  //Configuration Effects
+  configurationUpdateResult$ = createEffect(() => this.actions$.pipe(
+    ofType(ConfigurationActions.ConfigurationUpdateSuccess, ConfigurationActions.ConfigurationUpdateFail),
+    withLatestFrom(this.store.select(ConfigurationSelectors.getManagedConfigurationId)),
+    switchMap(([{ updateType, result, error }, configId]) => {
+        if(result){
+          this.snackBar.open("Configuration Successfully Updated", null, {duration: this.SNACK_BAR_DURATION})
+          return of(ConfigurationActions.LoadManagedConfiguration({configurationId: configId}))
+        } else {
+          let message = "Unable to update configuration";
+          if((typeof error === "string" || (error as any) instanceof String) && IsNotNullOrWhiteSpace(error)){
+            message = error
+          }
+          this.snackBar.open(message, null, {duration: this.SNACK_BAR_DURATION})
+          return of(ConfigurationActions.NoOperation())
+        }
+    })
+  ));
+
   updateCreateConfiguration$ = createEffect(() => this.actions$.pipe(
     ofType(ConfigurationActions.ManagedConfigurationUpdateSubmit),
     withLatestFrom(this.store.select(ConfigurationSelectors.getDataForManagedConfigurationSubmit)),
@@ -65,24 +104,36 @@ export class ConfigurationEffects {
       let observable = of(false)
       let error = "Configuration is null|undefined";
       if(configuration !== null && configuration !== undefined){
+
+        const config = {...configuration}
+        const invalidConfig = (
+          !IsNotNullOrWhiteSpace(config.name) || 
+          !IsNotNullOrWhiteSpace(config.serverId) ||  
+          !IsNotNullOrWhiteSpace(config.defaultChannel)
+        )
+
+        const invalidKickCache = (
+            config.enableKickCache && (
+            config.kickCacheDays === null || config.kickCacheDays === undefined ||
+            config.kickCacheHours === null || config.kickCacheHours === undefined ||
+            !IsNotNullOrWhiteSpace(config.kickCacheServerMessage) ||
+            !IsNotNullOrWhiteSpace(config.kickCacheUserMessage)
+          )
+        )
+
+        if(invalidConfig || invalidKickCache){
+          return of(ConfigurationActions.ConfigurationUpdateFail({result: false, error: "Missing required parameters", updateType: manageMode}))
+        }
+        
+        if(config.kickCacheDays == 0){
+          config.kickCacheDays = 2
+        }
+
+        if(config.kickCacheHours == 0){
+          config.kickCacheHours = 2
+        }
+
         if(manageMode == "create"){
-          const config = {...configuration}
-
-          if(!config.kickCacheDays){
-            config.kickCacheDays = 0
-          }
-
-          if(!config.kickCacheHours){
-            config.kickCacheHours = 0
-          }
-
-          if(!config.kickCacheServerMessage){
-            config.kickCacheServerMessage = ""
-          }
-
-          if(!config.kickCacheUserMessage){
-            config.kickCacheUserMessage = ""
-          }
 
           observable = this.configurationService.createConfiguration(config);
         } else {
@@ -106,17 +157,49 @@ export class ConfigurationEffects {
     })
   ))
 
+  deleteConfiguration$ = createEffect(() => this.actions$.pipe(
+    ofType(ConfigurationActions.ConfigurationDelete),
+    mergeMap(( { configurationId } ) => {
+      if(IsNotNullOrWhiteSpace(configurationId )){
+        return this.configurationService.deleteConfiguration(configurationId)
+          .pipe(
+            map(result => ConfigurationActions.ConfigurationUpdateSuccess({ updateType: "delete", result })),
+            catchError(error => of(ConfigurationActions.ConfigurationUpdateFail({ updateType: "delete", result: false, error})))
+        )
+      }
+      return of(ConfigurationActions.ConfigurationUpdateFail({ updateType: "delete", result: false, error:"ConfigurationId is null|undefined" }))
+    })
+  ));
+  //#endregion
 
-  //Trigger Effects
-  selectedTriggers$ = createEffect(() => this.actions$.pipe(
-    ofType(ConfigurationActions.TriggerUpdateSuccess),
+  //#region Trigger Effects
+
+  triggerUpdateResult$ = createEffect(() => this.actions$.pipe(
+    ofType(ConfigurationActions.TriggerUpdateFail, ConfigurationActions.TriggerUpdateSuccess),
+    mergeMap(({ updateType, result, error }) => {
+        if(result){
+          this.snackBar.open("Trigger Successfully Updated", null, {duration: this.SNACK_BAR_DURATION})
+          return of(ConfigurationActions.TriggerRefresh())
+        } else {
+          let message = `Unable to ${updateType} trigger`;
+          if((typeof error === "string" || (error as any) instanceof String) && IsNotNullOrWhiteSpace(error)){
+            message = error
+          }
+          this.snackBar.open(message, null, {duration: this.SNACK_BAR_DURATION})
+          return of(ConfigurationActions.NoOperation())
+        }
+    })
+  ));
+
+  refreshTriggers$ = createEffect(() => this.actions$.pipe(
+    ofType(ConfigurationActions.TriggerRefresh),
     withLatestFrom(this.store.select(ConfigurationSelectors.getManagedConfigurationId)),
     switchMap(([update, configurationId]) => {
       if(IsNotNullOrWhiteSpace(configurationId)){
         return this.triggerService.getTriggers(configurationId)
           .pipe(
             map(result => ConfigurationActions.TriggerRefreshSuccess({triggers: result })),
-            catchError(error => of(ConfigurationActions.TriggerRefreshFail({ error})))
+            catchError(error => of(ConfigurationActions.TriggerRefreshFail({ error })))
         )
       }
       return of(ConfigurationActions.TriggerRefreshFail({ error: "ConfigurationId is null|undefined" }))
@@ -127,7 +210,6 @@ export class ConfigurationEffects {
     ofType(ConfigurationActions.TriggerCreate),
     withLatestFrom(this.store.select(ConfigurationSelectors.getManagedConfigurationId)),
     switchMap(([{ trigger}, configurationId]) => {
-      console.log(configurationId)
       let error = "Trigger is null|undefined";
       if(trigger !== null && trigger !== undefined){
         if(IsNotNullOrWhiteSpace(configurationId)){
@@ -178,17 +260,36 @@ export class ConfigurationEffects {
       return of(ConfigurationActions.TriggerUpdateFail({ updateType: "delete", result: false, error:"TriggerId is null|undefined" }))
     })
   ));
+  //#endregion
 
-  //User Effects
-  selectedUsers$ = createEffect(() => this.actions$.pipe(
-    ofType(ConfigurationActions.UserUpdateSuccess),
+  //#region User Effects
+
+  userUpdateResult$ = createEffect(() => this.actions$.pipe(
+    ofType(ConfigurationActions.UserUpdateSuccess, ConfigurationActions.UserUpdateFail),
+    mergeMap(({ updateType, result, error }) => {
+        if(result){
+          this.snackBar.open("User Successfully Updated", null, {duration: this.SNACK_BAR_DURATION})
+          return of(ConfigurationActions.UserRefresh())
+        } else {
+          let message = `Unable to ${updateType} user`;
+          if((typeof error === "string" || (error as any) instanceof String) && IsNotNullOrWhiteSpace(error)){
+            message = error
+          }
+          this.snackBar.open(message, null, {duration: this.SNACK_BAR_DURATION})
+          return of(ConfigurationActions.NoOperation())
+        }
+    })
+  ));
+
+  refreshUsers$ = createEffect(() => this.actions$.pipe(
+    ofType(ConfigurationActions.UserRefresh),
     withLatestFrom(this.store.select(ConfigurationSelectors.getManagedConfigurationId)),
-    switchMap(([update, configurationId]) => {
+    switchMap(([result, configurationId]) => {
       if(IsNotNullOrWhiteSpace(configurationId)){
         return this.userService.getUsers(configurationId)
           .pipe(
             map(result => ConfigurationActions.UserRefreshSuccess({ users: result })),
-            catchError(error => of(ConfigurationActions.UserRefreshFail({ error})))
+            catchError(error => of(ConfigurationActions.UserRefreshFail({ error })))
         )
       }
       return of(ConfigurationActions.UserRefreshFail({ error: "ConfigurationId is null|undefined" }))
@@ -205,7 +306,7 @@ export class ConfigurationEffects {
           return this.userService.createUser(user, configurationId)
             .pipe(
               map(result => ConfigurationActions.UserUpdateSuccess({ updateType: "create", result, })),
-              catchError(error => of(ConfigurationActions.UserUpdateFail({ updateType: "create", result: false, error})))
+              catchError(error => of(ConfigurationActions.UserUpdateFail({ updateType: "create", result: false, error })))
           )
         } else {
           error = "ConfigurationId is null|undefined"
@@ -225,7 +326,7 @@ export class ConfigurationEffects {
           return this.userService.updateUser(user.id, user)
             .pipe(
               map(result => ConfigurationActions.UserUpdateSuccess({ updateType: "edit", result })),
-              catchError(error => of(ConfigurationActions.UserUpdateFail({ updateType: "edit", result: false, error})))
+              catchError(error => of(ConfigurationActions.UserUpdateFail({ updateType: "edit", result: false, error })))
           )
         } else {
           error = "ConfigurationId is null|undefined"
@@ -243,14 +344,11 @@ export class ConfigurationEffects {
         return this.userService.deleteUser(userId)
           .pipe(
             map(result => ConfigurationActions.UserUpdateSuccess({ updateType: "delete", result })),
-            catchError(error => of(ConfigurationActions.UserUpdateFail({ updateType: "delete", result: false, error})))
+            catchError(error => of(ConfigurationActions.UserUpdateFail({ updateType: "delete", result: false, error })))
         )
       }
       return of(ConfigurationActions.UserUpdateFail({ updateType: "delete", result: false, error:"UserId is null|undefined" }))
     })
   ));
-}
-
-export function IsNotNullOrWhiteSpace(str: string){
-  return (str !== null && str !== undefined && str.trim() != "")
+  //#endregion
 }

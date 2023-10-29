@@ -63,7 +63,7 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
 
   constructor(
     private fb: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -100,6 +100,7 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
     const editedConfig = {...this.configuration}
     const kickCacheEnabled = editedConfig?.enableKickCache ?? false
     this.configForm = this.fb.group({
+      "serverName": new FormControl({value: editedConfig?.name, disabled: this.viewMode == "view"}, [ Validators.required ]),
       "serverId": new FormControl({value: editedConfig?.serverId, disabled: this.viewMode == "view"}, [ Validators.required ]),
       "defaultChannel": new FormControl({value: editedConfig?.defaultChannel, disabled: this.viewMode == "view"}, [ Validators.required ]),
       "enableKickCache": new FormControl({value: kickCacheEnabled, disabled: this.viewMode == "view"}),
@@ -108,7 +109,6 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
       "kickCacheServerMessage": new FormControl({value: editedConfig?.kickCacheServerMessage, disabled: this.viewMode == "view"}),
       "kickCacheUserMessage": new FormControl({value: editedConfig?.kickCacheUserMessage, disabled: this.viewMode == "view"}),
     })
-    console.log(kickCacheEnabled)
     this.onKickCacheClick(kickCacheEnabled, true);
   }
 
@@ -137,14 +137,14 @@ export class ManageConfigurationComponent implements OnInit, OnChanges {
   onConfigurationValueChange(){
     const configData: Configuration = {
       id: this.configuration?.id,
+      name: this.configForm.controls["serverName"].value,
       serverId: this.configForm.controls["serverId"].value,
       defaultChannel: this.configForm.controls["defaultChannel"].value,
       enableKickCache: this.configForm.controls["enableKickCache"].value,
-      kickCacheDays: this.configForm.controls["kickCacheDays"].value ?? 0,
-      kickCacheHours: this.configForm.controls["kickCacheHours"].value ?? 0,
+      kickCacheDays: this.configForm.controls["kickCacheDays"].value,
+      kickCacheHours: this.configForm.controls["kickCacheHours"].value,
       kickCacheServerMessage: this.configForm.controls["kickCacheServerMessage"].value,
       kickCacheUserMessage: this.configForm.controls["kickCacheUserMessage"].value,
-      name: "server name",
       triggers: undefined,
       users: undefined
     }
